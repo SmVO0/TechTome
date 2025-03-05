@@ -3,14 +3,17 @@ package com.SVO.TechTome.subscription.model;
 import com.SVO.TechTome.user.model.User;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
 @Data
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 public class Subscription {
@@ -32,4 +35,10 @@ public class Subscription {
 
     @Column(nullable = false)
     private BigDecimal price;
+
+    @Column(nullable = false)
+    private LocalDateTime createdOn;
+
+    @Column(nullable = false)
+    private LocalDateTime completedOn;
 }
