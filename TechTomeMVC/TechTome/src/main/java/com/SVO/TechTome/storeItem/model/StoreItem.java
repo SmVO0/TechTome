@@ -1,14 +1,17 @@
 package com.SVO.TechTome.storeItem.model;
 
 import com.SVO.TechTome.category.model.Category;
+import com.SVO.TechTome.shoppingCart.model.ShoppingCart;
 import jakarta.persistence.*;
 
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.UUID;
 
 @Entity
 public class StoreItem {
 
+    @Column(nullable = false, unique = true)
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
@@ -27,4 +30,7 @@ public class StoreItem {
 
     @ManyToOne
     private Category category;
+
+    @ManyToMany
+    private List<ShoppingCart> shoppingCart;
 }
