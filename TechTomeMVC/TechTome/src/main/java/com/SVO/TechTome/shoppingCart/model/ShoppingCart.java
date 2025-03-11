@@ -16,15 +16,21 @@ import java.util.UUID;
 @Data
 public class ShoppingCart {
 
+    @Column(nullable = false, unique = true)
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    @OneToOne
-    private User owner;
+    @OneToOne(mappedBy = "shoppingCart")
+    private User user;
 
-    //@OneToMany(fetch = FetchType.EAGER, mappedBy = "owner")
-    //private List<StoreItem> items;
+    @ManyToMany
+    @JoinTable(
+            name = "cart_store_items",
+            joinColumns = @JoinColumn(name = "shopping_cart_id"),
+            inverseJoinColumns = @JoinColumn(name = "store_item_id")
+    )
+    private List<StoreItem> items;
 
 
 }
