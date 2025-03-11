@@ -1,5 +1,6 @@
 package com.SVO.TechTome.user.model;
 
+import com.SVO.TechTome.shoppingCart.model.ShoppingCart;
 import com.SVO.TechTome.subscription.model.Subscription;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -40,6 +41,10 @@ public class User {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private UserRole role;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "shopping_cart_id", referencedColumnName = "id")
+    private ShoppingCart shoppingCart;
 
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "owner")
     private List<Subscription> subscriptions = new ArrayList<>();
