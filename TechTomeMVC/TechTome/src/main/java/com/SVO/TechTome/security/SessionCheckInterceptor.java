@@ -23,7 +23,7 @@ public class SessionCheckInterceptor implements HandlerInterceptor {
 
         HttpSession currentUserSession = request.getSession(false);
         if (currentUserSession == null) {
-            response.sendRedirect("/login");
+            response.sendRedirect("/");
             return false;
         }
 
