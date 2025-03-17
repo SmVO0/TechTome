@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Page</title>
+    <link rel="stylesheet" type="text/css" href="/css/common.css">
+</head>
+<body>
+
+<header>
+    <div class="navbar">
+        <a th:href="@{/}" ><img src="/images/header/Logo.png" alt="Logo Image" class="logo"></a>
+
+    </div>
+</header>
+
+<div class="login-container">
+    <h1>Register</h1>
+    <form class="form" th:action="@{register}" th:method="POST" th:object="${registerRequest}">
+
+        <label for="username">Username</label>
+        <input type="username" id="username" name="username" th:field="*{username}" required>
+
+        <p class="alert-warning" th:if="${#fields.hasErrors('username')}" th:errors="*{username}"></p>
+
+        <label for="password">Password</label>
+        <input type="password" id="password" name="password" th:field="*{password}" required>
+        <p class="alert-warning" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></p>
+
+        <label for="email">E-mail</label>
+        <input type="email" id="email" name="email" th:field="*{email}" required>
+
+        <p class="alert-warning" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></p>
+
+
+        <button type="submit" class="login-btn">Register</button>
+    </form>
+    <p>Already have an account? <a th:href="@{login}">CLICK HERE</a></p>
+</div>
+
+<th:block th:insert="fragments/footer :: footer"></th:block>
+</body>
+</html>

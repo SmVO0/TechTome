@@ -1,32 +1,50 @@
 
 body {
-  font-family: Arial, sans-serif;
+  font-family: Inter, sans-serif;
   margin: 0;
   padding: 0;
-  background-color: #e6f0fa;
+  background-color: #E3F2FD;
   text-align: center;
+
 }
 
 .navbar {
   display: flex;
+  height: 84px;
   justify-content: space-between;
   align-items: center;
-  background-color: #0d1b40;
+  background-color: #002855;
   padding: 10px 20px;
   color: white;
 }
 
-.logo{
-  display: flex;
-  height: 84px;
-  margin-left: 10px;
+header{
+  background-color: #002855;
 }
 
-.icons {
+.logo{
   display: flex;
-  gap: 15px;
-  height: 84px;
+  max-height: 84px;
+  margin-left: 10px;
 }
+/*
+.login-container {
+  background-color: #f0f8ff;
+  text-align: center;
+  width: 40%;
+  max-height: 100%;
+  margin: 50px auto;
+  padding: 30px;
+  border-radius: 8px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}*/
+
+
 
 .login-container {
   background-color: #f0f8ff;
@@ -35,6 +53,17 @@ body {
   padding: 30px;
   border-radius: 8px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+
+}
+
+.login-container .form {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+}
+
+.login-container .form label {
+  align-self: flex-start;
 }
 
 label {
@@ -45,36 +74,28 @@ label {
 input {
   padding: 10px;
   margin-top: 5px;
+  margin-bottom: 15px;
   border: 1px solid #ccc;
   border-radius: 5px;
 }
 
-.login-btn {
-  margin-top: 20px;
-  padding: 10px;
-  border: none;
-  background-color: #b0c4de;
-  border-radius: 5px;
-  cursor: pointer;
-  opacity: 0.6;
-}
-
-.login-btn:hover {
-  opacity: 1;
-}
-
 .footer {
   background-color: #002855;
+  height: 50px;
+  position: fixed;
   color: white;
-  padding: 10px;
   bottom: 0;
+  left: 0;
   width: 100%;
+
+  text-align: center;
+  margin-top: auto;
+  font-weight: 300;
 }
 
 .button {
   display: inline-block;
   text-decoration: none;
-  appearance: none;
   padding: 10px 15px;
   background-color: transparent;
   font-size: 20px;
@@ -86,6 +107,9 @@ input {
   cursor: pointer;
   border-radius: 5px;
   border: 1px solid #f1f5ff;
-  transition: box-shadow 0.2s ease;
-  box-shadow: inset 0 1px 9px rgba(255, 255, 255, 0.5); /* Inset shadow with transparency */
+}
+
+.login-btn{
+  width: 30%;
+  align-self: center;
 }
