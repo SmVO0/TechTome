@@ -15,13 +15,13 @@ import javax.validation.constraints.Size;
 @NoArgsConstructor
 public class RegisterRequest {
 
-    @Size(min = 8, message = "Username must be at least 8 symbols")
+    @Size(min = 6, message = "Username must be at least 6 symbols")
     private String username;
-
-    @Email(message = "Email must be valid")
-    private String email;
 
     @Size(min = 8, message = "Password must be at least 8 symbols")
     private String password;
+
+    @Email(message = "Email must be valid")
+    private String email;
 
 }
