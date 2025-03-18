@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TechTome</title>
+    <link rel="stylesheet" href="/css/index.css">
+    <link rel="stylesheet" href="/css/common.css">
+    <link rel="stylesheet" href="/css/home.css">
+</head>
+<body>
+
+<header>
+    <div class="navbar">
+        <a th:href="@{/}" ><img src="/images/header/Logo.png" alt="Logo Image" class="logo"></a>
+        <div class="search-box">
+            <input type="text" class="search-bar" placeholder="Search...">
+            <button class="search-btn"><img src="/images/header/search.png" alt="Search Icon" class="search-icon"></button>
+        </div>
+        <div class="icons">
+            <a th:href="@{'/shopping/' + ${user.id}}">
+                <img src="/images/header/shopping_cart.png" alt="Shopping cart Picture" class="shopping-cart">
+            </a>
+            <a th:href="@{'/users/' + ${user.id} + '/profile'}">
+                <img src="/images/header/Profile.png" alt="Profile Picture" class="profile-picture">
+            </a>
+        </div>
+    </div>
+</header>
+
+<div class="main-container">
+    <div class="sidebar">
+        <div class="dd-menu"></div>
+    </div>
+
+    <div class="main-content">
+        <div class="promotions">
+
+        </div>
+        <div class="content">
+
+        </div>
+    </div>
+
+    <div class="sidebar">
+
+    </div>
+</div>
+
+<footer th:insert="fragments/footer :: footer"></footer>
+
+</body>
+
+</html>

@@ -1,0 +1,36 @@
+
+.icons{
+    align-items: end;
+}
+
+.shopping-cart {
+    height: 50px;
+}
+
+.profile-picture{
+    height: 50px;
+    align-self: end;
+    margin-left: 20px;
+}
+
+.search-bar {
+    width: 80%;
+    padding: 5px;
+    border-radius: 5px;
+    border: none;
+    align-self: center;
+}
+
+.search-btn {
+    width: 10%;
+    height: auto;
+    background-color: white;
+    border-radius: 5px;
+    border: none;
+    align-self: center;
+}
+
+.search-box{
+    width: 60%;
+
+}
