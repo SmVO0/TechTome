@@ -8,6 +8,7 @@ body {
 
 }
 
+
 .navbar {
   display: flex;
   height: 84px;
@@ -20,6 +21,28 @@ body {
 
 header{
   background-color: #002855;
+  height: 104px;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+}
+
+
+
+
+.footer {
+  background-color: #002855;
+  height: 50px;
+  position: fixed;
+  color: white;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+
+  text-align: center;
+  margin-top: auto;
+  font-weight: 300;
 }
 
 .logo{
@@ -27,33 +50,16 @@ header{
   max-height: 84px;
   margin-left: 10px;
 }
-/*
 .login-container {
-  background-color: #f0f8ff;
-  text-align: center;
-  width: 40%;
-  max-height: 100%;
-  margin: 50px auto;
-  padding: 30px;
-  border-radius: 8px;
 
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-}*/
-
-
-
-.login-container {
   background-color: #f0f8ff;
   width: 40%;
-  margin: 50px auto;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 170px;
   padding: 30px;
   border-radius: 8px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-
 }
 
 .login-container .form {
@@ -63,6 +69,28 @@ header{
 }
 
 .login-container .form label {
+  align-self: flex-start;
+}
+
+.register-container {
+
+  background-color: #f0f8ff;
+  width: 40%;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 140px;
+  padding: 30px;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.register-container .form {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+}
+
+.register-container .form label {
   align-self: flex-start;
 }
 
@@ -79,19 +107,6 @@ input {
   border-radius: 5px;
 }
 
-.footer {
-  background-color: #002855;
-  height: 50px;
-  position: fixed;
-  color: white;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-
-  text-align: center;
-  margin-top: auto;
-  font-weight: 300;
-}
 
 .button {
   display: inline-block;
@@ -113,3 +128,4 @@ input {
   width: 30%;
   align-self: center;
 }
+
