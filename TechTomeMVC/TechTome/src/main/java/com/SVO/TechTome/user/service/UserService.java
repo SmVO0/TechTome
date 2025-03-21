@@ -2,6 +2,13 @@ package com.SVO.TechTome.user.service;
 
 import com.SVO.TechTome.exception.DomainException;
 import com.SVO.TechTome.security.AuthMetaData;
+import com.SVO.TechTome.shoppingCart.model.ShoppingCart;
+import com.SVO.TechTome.shoppingCart.repository.ShoppingCartRepository;
+import com.SVO.TechTome.shoppingCart.service.ShoppingCartService;
+import com.SVO.TechTome.subscription.model.Subscription;
+import com.SVO.TechTome.subscription.model.SubscriptionStatus;
+import com.SVO.TechTome.subscription.model.SubscriptionType;
+import com.SVO.TechTome.subscription.repository.SubscriptionRepository;
 import com.SVO.TechTome.user.model.User;
 import com.SVO.TechTome.user.model.UserRole;
 import com.SVO.TechTome.user.repository.UserRepository;
@@ -16,6 +23,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.validation.Valid;
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -27,11 +37,17 @@ public class UserService implements UserDetailsService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final ShoppingCartService shoppingCartService;
+    private final ShoppingCartRepository shoppingCartRepository;
+    private final SubscriptionRepository subscriptionRepository;
 
     @Autowired
-    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, ShoppingCartService shoppingCartService, ShoppingCartRepository shoppingCartRepository, SubscriptionRepository subscriptionRepository) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
+        this.shoppingCartService = shoppingCartService;
+        this.shoppingCartRepository = shoppingCartRepository;
+        this.subscriptionRepository = subscriptionRepository;
     }
 
     public User login(LoginRequest loginRequest) {
@@ -49,16 +65,37 @@ public class UserService implements UserDetailsService {
         return user;
     }
 
-
-    public User register(RegisterRequest registerRequest) {
+@Transactional
+    public User register(@Valid RegisterRequest registerRequest) {
 
         Optional<User> optionUser = userRepository.findByEmail(registerRequest.getEmail());
         if (optionUser.isPresent()) {
             throw new DomainException("Username with email [%s] already exist.".formatted(registerRequest.getEmail()));
         }
         User user = initializeUser(registerRequest);
+        user.setRole(UserRole.USER);
+
+
+
+        ShoppingCart shoppingCart = new ShoppingCart();
+        shoppingCart.setUser(user);
+        shoppingCartRepository.save(shoppingCart);
+
+        Subscription subscription = new Subscription();
+        subscription.setType(SubscriptionType.DEFAULT);
+        subscription.setStatus(SubscriptionStatus.ACTIVE);
+        subscription.setOwner(user);
+        subscription.setCreatedOn(LocalDateTime.now());
+        subscription.setCompletedOn(LocalDateTime.now());
+        subscription.setPrice(BigDecimal.valueOf(0));
+        subscriptionRepository.save(subscription);
+
+        user.setShoppingCart(shoppingCart);
 
         userRepository.save(user);
+
+
+
 
         log.info("Successfully create new user account for email [%s] and id [%s]".formatted(user.getEmail(), user.getId()));
 

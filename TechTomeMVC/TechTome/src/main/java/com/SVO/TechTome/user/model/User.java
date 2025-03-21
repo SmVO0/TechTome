@@ -3,17 +3,14 @@ package com.SVO.TechTome.user.model;
 import com.SVO.TechTome.shoppingCart.model.ShoppingCart;
 import com.SVO.TechTome.subscription.model.Subscription;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
 @Builder
-@Getter
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
