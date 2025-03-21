@@ -14,7 +14,9 @@
     <div class="navbar">
         <a th:href="@{/}" ><img src="/images/header/Logo.png" alt="Logo Image" class="logo"></a>
         <div class="search-box">
-            <input type="text" class="search-bar" placeholder="Search...">
+            <label>
+                <input type="text" class="search-bar" placeholder="Search...">
+            </label>
             <button class="search-btn"><img src="/images/header/search.png" alt="Search Icon" class="search-icon"></button>
         </div>
         <div class="icons">
@@ -29,21 +31,50 @@
 </header>
 
 <div class="main-container">
+
     <div class="sidebar">
-        <div class="dd-menu"></div>
+        <div class="menu">
+            <a th:href="@{'/home'}">
+                <button>HOME</button>
+            </a>
+            <a th:href="@{'/category/computers'}">
+                <button>COMPUTERS</button>
+            </a>
+            <a th:href="@{'/category/laptops'}">
+                <button>LAPTOPS</button>
+            </a>
+            <a th:href="@{'/category/keyboards'}">
+                <button>KEYBOARDS</button>
+            </a>
+            <a th:href="@{'/category/mice'}">
+                <button>MICE</button>
+            </a>
+            <a th:href="@{'/category/monitors'}">
+                <button>MONITORS</button>
+            </a>
+        </div>
     </div>
 
     <div class="main-content">
         <div class="promotions">
+            <a th:href="@{'/promotions/new'}">
+                <button>WHAT'S NEW</button>
+            </a>
+            <a th:href="@{'/promotions/bestseller'}">
+                <button>BESTSELLER</button>
+            </a>
+            <a th:href="@{'/promotions/promotion'}">
+                <button>PROMOTIONS</button>
+            </a>
 
         </div>
         <div class="content">
-
+            <label>Content</label>
         </div>
     </div>
 
     <div class="sidebar">
-
+        <label></label>
     </div>
 </div>
 
