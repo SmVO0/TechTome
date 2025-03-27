@@ -3,12 +3,20 @@ package com.SVO.TechTome.storeItem.model;
 import com.SVO.TechTome.category.model.Category;
 import com.SVO.TechTome.shoppingCart.model.ShoppingCart;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.UUID;
 
 @Entity
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class StoreItem {
 
     @Column(nullable = false, unique = true)
@@ -29,6 +37,7 @@ public class StoreItem {
     private String image;
 
     @ManyToOne
+    @JoinColumn(name = "category_id", nullable = false)
     private Category category;
 
     @ManyToMany
