@@ -4,6 +4,7 @@ import com.SVO.TechTome.user.model.UserRole;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
@@ -21,7 +22,9 @@ public class AuthMetaData implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of();
+        SimpleGrantedAuthority authority = new SimpleGrantedAuthority("ROLE_" + userRole.name());
+
+        return List.of(authority);
     }
 
     @Override
@@ -53,4 +56,6 @@ public class AuthMetaData implements UserDetails {
     public boolean isEnabled() {
         return true;
     }
+
+
 }
