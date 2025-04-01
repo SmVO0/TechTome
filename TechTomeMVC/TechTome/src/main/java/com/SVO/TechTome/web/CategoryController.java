@@ -39,7 +39,6 @@ public class CategoryController {
 
          ModelAndView modelAndView = new ModelAndView();
          modelAndView.setViewName("category");
-         modelAndView.addObject("category", category);
          modelAndView.addObject("items", items);
          modelAndView.addObject("user", user);
 
