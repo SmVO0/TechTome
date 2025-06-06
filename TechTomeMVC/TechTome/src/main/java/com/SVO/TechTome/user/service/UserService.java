@@ -9,6 +9,7 @@ import com.SVO.TechTome.subscription.model.Subscription;
 import com.SVO.TechTome.subscription.model.SubscriptionStatus;
 import com.SVO.TechTome.subscription.model.SubscriptionType;
 import com.SVO.TechTome.subscription.repository.SubscriptionRepository;
+import com.SVO.TechTome.subscription.service.SubscriptionService;
 import com.SVO.TechTome.user.model.User;
 import com.SVO.TechTome.user.model.UserRole;
 import com.SVO.TechTome.user.repository.UserRepository;
@@ -16,6 +17,7 @@ import com.SVO.TechTome.web.dto.LoginRequest;
 import com.SVO.TechTome.web.dto.RegisterRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -23,9 +25,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.validation.Valid;
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -40,59 +40,38 @@ public class UserService implements UserDetailsService {
     private final ShoppingCartService shoppingCartService;
     private final ShoppingCartRepository shoppingCartRepository;
     private final SubscriptionRepository subscriptionRepository;
+    private final SubscriptionService subscriptionService;
 
     @Autowired
-    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, ShoppingCartService shoppingCartService, ShoppingCartRepository shoppingCartRepository, SubscriptionRepository subscriptionRepository) {
+    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, ShoppingCartService shoppingCartService, ShoppingCartRepository shoppingCartRepository, SubscriptionRepository subscriptionRepository, SubscriptionService subscriptionService) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.shoppingCartService = shoppingCartService;
         this.shoppingCartRepository = shoppingCartRepository;
         this.subscriptionRepository = subscriptionRepository;
+        this.subscriptionService = subscriptionService;
     }
 
-    public User login(LoginRequest loginRequest) {
-
-        Optional<User> optionUser = userRepository.findByEmail(loginRequest.getEmail());
-        if (optionUser.isEmpty()) {
-            throw new DomainException("Email or password are incorrect.");
-        }
-
-        User user = optionUser.get();
-        if (!passwordEncoder.matches(loginRequest.getPassword(), user.getPassword())) {
-            throw new DomainException("Username or password are incorrect.");
-        }
-
-        return user;
-    }
-
-@Transactional
-    public User register(@Valid RegisterRequest registerRequest) {
+    @CacheEvict(value = "users", allEntries = true)
+    @Transactional
+    public User register(RegisterRequest registerRequest) {
 
         Optional<User> optionUser = userRepository.findByEmail(registerRequest.getEmail());
         if (optionUser.isPresent()) {
             throw new DomainException("Username with email [%s] already exist.".formatted(registerRequest.getEmail()));
         }
-        User user = initializeUser(registerRequest);
-        user.setRole(UserRole.USER);
+        User user = userRepository.save(initializeUser(registerRequest));
 
 
 
         ShoppingCart shoppingCart = new ShoppingCart();
-        shoppingCart.setUser(user);
+        shoppingCart.setTotalPrice(BigDecimal.valueOf(0));
+        shoppingCart.setOwner(user);
         shoppingCartRepository.save(shoppingCart);
-
-        Subscription subscription = new Subscription();
-        subscription.setType(SubscriptionType.DEFAULT);
-        subscription.setStatus(SubscriptionStatus.ACTIVE);
-        subscription.setOwner(user);
-        subscription.setCreatedOn(LocalDateTime.now());
-        subscription.setCompletedOn(LocalDateTime.now());
-        subscription.setPrice(BigDecimal.valueOf(0));
-        subscriptionRepository.save(subscription);
+        Subscription subscription = subscriptionService.createDefaultSubscription(user);
 
         user.setShoppingCart(shoppingCart);
 
-        userRepository.save(user);
 
 
 
@@ -114,7 +93,7 @@ public class UserService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 
-        User user = userRepository.findByEmail(username).orElseThrow(() -> new UsernameNotFoundException(username));
+        User user = userRepository.findByEmail(username).orElseThrow(() -> new DomainException("User with this email not found."));
 
         return new AuthMetaData(user.getId(), user.getEmail(), user.getPassword(), user.getRole());
     }
