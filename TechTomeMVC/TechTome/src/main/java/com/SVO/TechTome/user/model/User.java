@@ -1,6 +1,7 @@
 package com.SVO.TechTome.user.model;
 
 import com.SVO.TechTome.shoppingCart.model.ShoppingCart;
+import com.SVO.TechTome.storeItem.model.StoreItem;
 import com.SVO.TechTome.subscription.model.Subscription;
 import jakarta.persistence.*;
 import lombok.*;
