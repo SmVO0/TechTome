@@ -135,14 +135,15 @@ input {
   font-family: 'Inter', sans-serif;
   font-weight: 300;
   font-size: 14px;
-  letter-spacing: 0.5px;
+  letter-spacing: 1px;
 }
 
 p.alert-warning {
   font-family: 'Inter', sans-serif;
+  color: red;
   font-weight: 300;
   font-size: 14px;
-  letter-spacing: 0.5px;
+  letter-spacing: 1px;
   margin: 5px 0 0;
 }
 

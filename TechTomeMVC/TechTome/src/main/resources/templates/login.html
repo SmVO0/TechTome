@@ -17,13 +17,16 @@
 
 <div class="login-container">
     <h1>Log In</h1>
-    <form class="form" th:action="@{login}" th:method="POST" th:object="${loginRequest}">
+    <form class="form" th:action="@{/login}" th:method="POST" th:object="${loginRequest}">
 
         <label for="email">E-mail</label>
         <input type="email" id="email" name="email" th:field="*{email}" required>
 
         <label for="password">Password</label>
-        <input type="password" id="password" name="password" th:field="*{password}" required>
+        <input type="password" id="password" name="password" th:field="*{password}" min=8 required>
+
+        <p class="alert-warning" th:if="${error}" th:text="${error}"></p>
+
 
         <button type="submit" class="login-btn">Log In</button>
     </form>
