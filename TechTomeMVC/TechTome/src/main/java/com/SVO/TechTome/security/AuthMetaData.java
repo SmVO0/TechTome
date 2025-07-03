@@ -37,21 +37,25 @@ public class AuthMetaData implements UserDetails {
         return this.email;
     }
 
+    // method not needed but requires a valid implementation
     @Override
     public boolean isAccountNonExpired() {
         return true;
     }
 
+    // method not needed but requires a valid implementation
     @Override
     public boolean isAccountNonLocked() {
         return true;
     }
 
+    // method not needed but requires a valid implementation
     @Override
     public boolean isCredentialsNonExpired() {
         return true;
     }
 
+    // method not needed but requires a valid implementation
     @Override
     public boolean isEnabled() {
         return true;

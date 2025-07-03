@@ -7,6 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.UUID;
 
@@ -22,7 +23,10 @@ public class ShoppingCart {
     private UUID id;
 
     @OneToOne(mappedBy = "shoppingCart")
-    private User user;
+    private User owner;
+
+    @Column(nullable = false)
+    private BigDecimal totalPrice;
 
     @ManyToMany
     @JoinTable(

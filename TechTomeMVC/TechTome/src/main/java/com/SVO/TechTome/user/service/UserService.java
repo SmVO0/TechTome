@@ -1,6 +1,6 @@
 package com.SVO.TechTome.user.service;
 
-import com.SVO.TechTome.exception.DomainException;
+import com.SVO.TechTome.web.exception.DomainException;
 import com.SVO.TechTome.security.AuthMetaData;
 import com.SVO.TechTome.shoppingCart.model.ShoppingCart;
 import com.SVO.TechTome.shoppingCart.repository.ShoppingCartRepository;

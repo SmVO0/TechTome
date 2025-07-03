@@ -6,9 +6,10 @@ import com.SVO.TechTome.user.repository.UserRepository;
 import com.SVO.TechTome.user.service.UserService;
 import com.SVO.TechTome.web.dto.LoginRequest;
 import com.SVO.TechTome.web.dto.RegisterRequest;
-import jakarta.servlet.http.HttpSession;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
+
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.validation.Valid;
+import java.util.List;
 
 @Controller
 public class IndexController {
@@ -23,6 +25,7 @@ public class IndexController {
     private final UserService userService;
     private final UserRepository userRepository;
 
+    @Autowired
     public IndexController(UserService userService, UserRepository userRepository) {
         this.userService = userService;
         this.userRepository = userRepository;
@@ -39,7 +42,8 @@ public class IndexController {
 
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("login");
-        modelAndView.addObject("loginRequest", new LoginRequest());
+        LoginRequest loginRequest = new LoginRequest();
+        modelAndView.addObject("loginRequest", loginRequest);
 
         if (errorParam != null) {
             modelAndView.addObject("error", errorParam);
@@ -49,14 +53,11 @@ public class IndexController {
     }
 
     @PostMapping("/login")
-    public String login(@Valid LoginRequest loginRequest, BindingResult bindingResult, HttpSession session) {
+    public String login(@Valid LoginRequest loginRequest, BindingResult bindingResult) {
 
         if (bindingResult.hasErrors()) {
             return "login";
         }
-
-        User loggedInUser = userService.login(loginRequest);
-        session.setAttribute("user_id", loggedInUser.getId());
 
         return "redirect:/home";
     }
@@ -65,7 +66,8 @@ public class IndexController {
     public ModelAndView getRegisterPage() {
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("register");
-        modelAndView.addObject("registerRequest", new RegisterRequest());
+        RegisterRequest registerRequest = new RegisterRequest();
+        modelAndView.addObject("registerRequest", registerRequest);
 
         return modelAndView;
     }
@@ -73,17 +75,23 @@ public class IndexController {
     @PostMapping("/register")
     public ModelAndView registerNewUser(@Valid RegisterRequest registerRequest, BindingResult bindingResult) {
 
-        if (bindingResult.hasErrors()) {
+        if (bindingResult.hasFieldErrors()) {
             return new ModelAndView("register");
         }
 
         userService.register(registerRequest);
 
-        return new ModelAndView("redirect:/home");
+        return new ModelAndView("redirect:/login");
     }
 
     @GetMapping("/home")
     public ModelAndView getHomePage(@AuthenticationPrincipal AuthMetaData authMetaData) {
+
+        List<String> imageUrls = List.of(
+                "static/images/slide1.jpg",
+                "static/images/slide2.jpg",
+                "static/images/slide3.jpg"
+        );
 
         User user = userService.getById(authMetaData.getId());
 
@@ -93,6 +101,4 @@ public class IndexController {
 
         return modelAndView;
     }
-
-
 }
