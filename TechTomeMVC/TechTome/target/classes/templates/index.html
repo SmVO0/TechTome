@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TechTome</title>
+    <link rel="stylesheet" type="text/css" href="/css/common.css">
+    <link rel="stylesheet" type="text/css" href="/css/index.css">
+</head>
+<body>
+<header>
+    <nav class="navbar">
+        <a th:href="@{/login}" class="button login">Login</a>
+        <a th:href="@{/register}" class="button register">Register</a>
+    </nav>
+</header>
+
+<div class="logo-container">
+    <img src="/images/header/Logo.png" alt="Logo Image">
+</div>
+
+<footer th:insert="fragments/footer :: footer"></footer>
+</body>
+</html>
