@@ -1,12 +1,12 @@
 package com.SVO.TechTome.web;
 
-import com.SVO.TechTome.category.model.Category;
-import com.SVO.TechTome.category.service.CategoryService;
+import com.SVO.TechTome.models.Category;
+import com.SVO.TechTome.services.CategoryService;
 import com.SVO.TechTome.security.AuthMetaData;
-import com.SVO.TechTome.storeItem.model.StoreItem;
-import com.SVO.TechTome.storeItem.service.StoreItemService;
-import com.SVO.TechTome.user.model.User;
-import com.SVO.TechTome.user.service.UserService;
+import com.SVO.TechTome.models.StoreItem;
+import com.SVO.TechTome.services.StoreItemService;
+import com.SVO.TechTome.models.User;
+import com.SVO.TechTome.services.UserService;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;

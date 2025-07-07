@@ -1,7 +1,6 @@
 package com.SVO.TechTome.web.dto;
 
-import com.SVO.TechTome.category.model.Category;
-import jakarta.persistence.Column;
+import com.SVO.TechTome.models.Category;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

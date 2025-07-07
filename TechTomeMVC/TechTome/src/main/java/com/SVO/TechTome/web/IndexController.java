@@ -1,9 +1,9 @@
 package com.SVO.TechTome.web;
 
 import com.SVO.TechTome.security.AuthMetaData;
-import com.SVO.TechTome.user.model.User;
-import com.SVO.TechTome.user.repository.UserRepository;
-import com.SVO.TechTome.user.service.UserService;
+import com.SVO.TechTome.models.User;
+import com.SVO.TechTome.repositories.UserRepository;
+import com.SVO.TechTome.services.UserService;
 import com.SVO.TechTome.web.dto.LoginRequest;
 import com.SVO.TechTome.web.dto.RegisterRequest;
 import org.springframework.beans.factory.annotation.Autowired;

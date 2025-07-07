@@ -1,14 +1,12 @@
 package com.SVO.TechTome.web;
 
 import com.SVO.TechTome.security.AuthMetaData;
-import com.SVO.TechTome.user.model.User;
-import com.SVO.TechTome.user.repository.UserRepository;
-import com.SVO.TechTome.user.service.UserService;
+import com.SVO.TechTome.models.User;
+import com.SVO.TechTome.services.UserService;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 

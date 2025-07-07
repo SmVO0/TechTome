@@ -1,10 +1,9 @@
 package com.SVO.TechTome.web;
 
-import com.SVO.TechTome.shoppingCart.service.ShoppingCartService;
-import com.SVO.TechTome.user.service.UserService;
+import com.SVO.TechTome.services.ShoppingCartService;
+import com.SVO.TechTome.services.UserService;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
-import java.util.*;
 
 @Controller
 @RequestMapping("/shopping")

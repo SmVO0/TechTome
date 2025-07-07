@@ -1,6 +1,6 @@
 package com.SVO.TechTome.security;
 
-import com.SVO.TechTome.user.model.UserRole;
+import com.SVO.TechTome.models.enums.UserRole;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.springframework.security.core.GrantedAuthority;
