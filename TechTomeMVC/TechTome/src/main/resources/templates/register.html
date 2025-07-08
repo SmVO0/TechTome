@@ -30,11 +30,11 @@
         <p class="alert-warning" th:if="${#fields.hasErrors('username')}" th:errors="*{username}"></p>
 
         <label for="password">Password</label>
-        <input type="text" placeholder="Password" id="password" th:field="*{password}"  required>
+        <input type="text" min=8 placeholder="Password" id="password" th:field="*{password}" required>
         <p class="alert-warning" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></p>
 
         <label for="email">E-mail</label>
-        <input type="text" placeholder="Email" id="email" th:field="*{email}" required>
+        <input type="email" placeholder="Email" id="email" th:field="*{email}" required>
 
         <p class="alert-warning" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></p>
 

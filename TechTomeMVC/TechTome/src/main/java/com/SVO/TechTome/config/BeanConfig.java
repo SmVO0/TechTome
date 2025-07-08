@@ -1,4 +1,4 @@
-package com.SVO.TechTome.web.config;
+package com.SVO.TechTome.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

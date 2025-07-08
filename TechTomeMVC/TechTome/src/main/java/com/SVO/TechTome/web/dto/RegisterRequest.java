@@ -1,14 +1,15 @@
 package com.SVO.TechTome.web.dto;
 
 
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.validation.constraints.Email;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Size;
+
 
 @Data
 @Builder
@@ -16,15 +17,15 @@ import javax.validation.constraints.Size;
 @NoArgsConstructor
 public class RegisterRequest {
 
-    @NotBlank
+    @NotNull
     @Size(min = 6, message = "Username must be at least 6 symbols")
     private String username;
 
-    @NotBlank
+    @NotNull
     @Size(min = 8, message = "Password must be at least 8 symbols")
     private String password;
 
-    @NotBlank
+    @NotNull
     @Email(message = "Email must be valid")
     private String email;
 

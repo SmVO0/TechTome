@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
-import javax.validation.Valid;
+import jakarta.validation.Valid;
 import java.util.List;
 
 @Controller
@@ -87,11 +87,12 @@ public class IndexController {
     @GetMapping("/home")
     public ModelAndView getHomePage(@AuthenticationPrincipal AuthMetaData authMetaData) {
 
-        List<String> imageUrls = List.of(
-                "static/images/slide1.jpg",
-                "static/images/slide2.jpg",
-                "static/images/slide3.jpg"
-        );
+        // TODO: carousel here
+//        List<String> imageUrls = List.of(
+//                "static/images/slide1.jpg",
+//                "static/images/slide2.jpg",
+//                "static/images/slide3.jpg"
+//        );
 
         User user = userService.getById(authMetaData.getId());
 
