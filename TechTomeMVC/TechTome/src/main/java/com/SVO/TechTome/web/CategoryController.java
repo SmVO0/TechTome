@@ -20,6 +20,7 @@ import java.util.List;
 @RequestMapping("/category")
 public class CategoryController {
 
+
     private final CategoryService categoryService;
     private final UserService userService;
     private final StoreItemService storeItemService;
@@ -41,7 +42,7 @@ public class CategoryController {
          modelAndView.setViewName("category");
          modelAndView.addObject("items", items);
          modelAndView.addObject("user", user);
-
+        
          return modelAndView;
 
     }
