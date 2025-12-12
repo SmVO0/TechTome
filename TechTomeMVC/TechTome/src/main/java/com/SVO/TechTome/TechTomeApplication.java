@@ -7,6 +7,8 @@ import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
+import java.util.TimeZone;
+
 @SpringBootApplication
 @EnableAsync
 @EnableScheduling
@@ -14,7 +16,8 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @EnableFeignClients
 public class TechTomeApplication {
 
-	public static void main(String[] args) {
+	public static void main(String[] args){
+	TimeZone.setDefault(TimeZone.getTimeZone("Europe/Sofia"));
 		SpringApplication.run(TechTomeApplication.class, args);
 	}
 
