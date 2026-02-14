@@ -26,13 +26,9 @@ public class ShoppingCart {
     @Column(nullable = false)
     private BigDecimal totalPrice;
 
-    @ManyToMany
-    @JoinTable(
-            name = "cart_store_items",
-            joinColumns = @JoinColumn(name = "shopping_cart_id"),
-            inverseJoinColumns = @JoinColumn(name = "store_item_id")
-    )
-    private List<StoreItem> items;
+    @Column
+    @OneToMany(mappedBy = "shoppingCart")
+    private List<ShoppingCartItem> items;
 
 
 }
