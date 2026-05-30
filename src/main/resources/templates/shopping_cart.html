@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shopping Cart - TechTome</title>
+    <link rel="stylesheet" href="/css/common.css">
+</head>
+<body>
+
+<header>
+    <div class="navbar">
+        <a th:href="@{/}"><img src="/images/header/Logo.png" alt="Logo" class="logo"></a>
+        <div class="icons">
+            <a th:href="@{/shopping}">
+                <img src="/images/header/shopping_cart.png" alt="Shopping Cart" class="shopping-cart">
+            </a>
+            <a th:href="@{/users/profile}">
+                <img src="/images/header/Profile.png" alt="Profile" class="profile-picture">
+            </a>
+        </div>
+    </div>
+</header>
+
+<div class="main-container">
+    <h2>Your Shopping Cart</h2>
+
+    <div th:if="${#lists.isEmpty(items)}">
+        <p>Your cart is empty.</p>
+    </div>
+
+    <div th:unless="${#lists.isEmpty(items)}">
+        <table>
+            <thead>
+                <tr>
+                    <th>Item</th>
+                    <th>Price</th>
+                    <th>Quantity</th>
+                    <th>Subtotal</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="cartItem : ${items}">
+                    <td th:text="${cartItem.storeItem.name}"></td>
+                    <td th:text="${cartItem.storeItem.price} + '$'"></td>
+                    <td th:text="${cartItem.quantity}"></td>
+                    <td th:text="${cartItem.storeItem.price * cartItem.quantity} + '$'"></td>
+                    <td>
+                        <form th:action="@{/shopping/add}" method="post">
+                            <input type="hidden" name="itemId" th:value="${cartItem.storeItem.id}">
+                            <button type="submit">+</button>
+                        </form>
+                        <form th:action="@{/shopping/remove}" method="post">
+                            <input type="hidden" name="itemId" th:value="${cartItem.storeItem.id}">
+                            <button type="submit">-</button>
+                        </form>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <p><strong>Total: </strong><span th:text="${totalPrice} + '$'"></span></p>
+    </div>
+</div>
+
+<footer th:insert="fragments/footer :: footer"></footer>
+
+</body>
+</html>
