@@ -14,6 +14,9 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.UUID;
 
+import static com.SVO.TechTome.constants.ExceptionMessages.SHOPPING_CART_NOT_FOUND;
+import static com.SVO.TechTome.constants.ExceptionMessages.STORE_ITEM_NOT_FOUND;
+
 @Service
 public class ShoppingCartService {
 
@@ -32,9 +35,9 @@ public class ShoppingCartService {
     @Transactional
     public void addItem(UUID cartId, UUID storeItemId) {
         ShoppingCart cart = shoppingCartRepository.findById(cartId)
-                .orElseThrow(() -> new DomainException("Shopping cart not found."));
+                .orElseThrow(() -> new DomainException(SHOPPING_CART_NOT_FOUND));
         StoreItem item = storeItemRepository.findById(storeItemId)
-                .orElseThrow(() -> new DomainException("Item not found."));
+                .orElseThrow(() -> new DomainException(STORE_ITEM_NOT_FOUND));
 
         ShoppingCartItem cartItem = shoppingCartItemRepository
                 .findByCartAndStoreItem(cart, item)
@@ -52,9 +55,9 @@ public class ShoppingCartService {
     @Transactional
     public void removeItem(UUID cartId, UUID storeItemId) {
         ShoppingCart cart = shoppingCartRepository.findById(cartId)
-                .orElseThrow(() -> new DomainException("Shopping cart not found."));
+                .orElseThrow(() -> new DomainException(SHOPPING_CART_NOT_FOUND));
         StoreItem item = storeItemRepository.findById(storeItemId)
-                .orElseThrow(() -> new DomainException("Item not found."));
+                .orElseThrow(() -> new DomainException(STORE_ITEM_NOT_FOUND));
 
         shoppingCartItemRepository.findByCartAndStoreItem(cart, item).ifPresent(cartItem -> {
             if (cartItem.getQuantity() > 1) {
@@ -70,7 +73,7 @@ public class ShoppingCartService {
 
     public List<ShoppingCartItem> getItems(UUID cartId) {
         ShoppingCart cart = shoppingCartRepository.findById(cartId)
-                .orElseThrow(() -> new DomainException("Shopping cart not found."));
+                .orElseThrow(() -> new DomainException(SHOPPING_CART_NOT_FOUND));
         return shoppingCartItemRepository.findByCart(cart);
     }
 

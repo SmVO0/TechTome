@@ -1,12 +1,10 @@
 package com.SVO.TechTome.services;
 
+import com.SVO.TechTome.constants.ExceptionMessages;
 import com.SVO.TechTome.web.exception.DomainException;
 import com.SVO.TechTome.security.AuthMetaData;
 import com.SVO.TechTome.models.ShoppingCart;
 import com.SVO.TechTome.repositories.ShoppingCartRepository;
-import com.SVO.TechTome.models.Subscription;
-import com.SVO.TechTome.repositories.SubscriptionRepository;
-import com.SVO.TechTome.services.SubscriptionService;
 import com.SVO.TechTome.models.User;
 import com.SVO.TechTome.models.enums.UserRole;
 import com.SVO.TechTome.repositories.UserRepository;
@@ -25,26 +23,22 @@ import java.math.BigDecimal;
 import java.util.Optional;
 import java.util.UUID;
 
+import static com.SVO.TechTome.constants.ExceptionMessages.USER_ALREADY_EXISTS;
+
 @Service
 @Slf4j
 public class UserService implements UserDetailsService {
 
-
-
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
-    private final ShoppingCartService shoppingCartService;
     private final ShoppingCartRepository shoppingCartRepository;
-    private final SubscriptionRepository subscriptionRepository;
     private final SubscriptionService subscriptionService;
 
     @Autowired
-    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, ShoppingCartService shoppingCartService, ShoppingCartRepository shoppingCartRepository, SubscriptionRepository subscriptionRepository, SubscriptionService subscriptionService) {
+    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, ShoppingCartRepository shoppingCartRepository, SubscriptionService subscriptionService) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
-        this.shoppingCartService = shoppingCartService;
         this.shoppingCartRepository = shoppingCartRepository;
-        this.subscriptionRepository = subscriptionRepository;
         this.subscriptionService = subscriptionService;
     }
 
@@ -54,23 +48,17 @@ public class UserService implements UserDetailsService {
 
         Optional<User> optionUser = userRepository.findByEmail(registerRequest.getEmail());
         if (optionUser.isPresent()) {
-            throw new DomainException("Username with email [%s] already exist.".formatted(registerRequest.getEmail()));
+            throw new DomainException(USER_ALREADY_EXISTS.formatted(registerRequest.getEmail()));
         }
         User user = userRepository.save(initializeUser(registerRequest));
-
-
 
         ShoppingCart shoppingCart = new ShoppingCart();
         shoppingCart.setTotalPrice(BigDecimal.valueOf(0));
         shoppingCart.setOwner(user);
         shoppingCartRepository.save(shoppingCart);
-        Subscription subscription = subscriptionService.createDefaultSubscription(user);
+        subscriptionService.createDefaultSubscription(user);
 
         user.setShoppingCart(shoppingCart);
-
-
-
-
 
         log.info("Successfully create new user account for email [%s] and id [%s]".formatted(user.getEmail(), user.getId()));
 
@@ -89,12 +77,12 @@ public class UserService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 
-        User user = userRepository.findByEmail(username).orElseThrow(() -> new DomainException("User with this email not found."));
+        User user = userRepository.findByEmail(username).orElseThrow(() -> new DomainException(ExceptionMessages.USER_NOT_FOUND_BY_EMAIL));
 
         return new AuthMetaData(user.getId(), user.getEmail(), user.getPassword(), user.getRole());
     }
 
     public User getById(UUID id) {
-        return userRepository.findById(id).orElseThrow(() -> new UsernameNotFoundException(id.toString()));
+        return userRepository.findById(id).orElseThrow(() -> new UsernameNotFoundException(ExceptionMessages.USER_NOT_FOUND_BY_ID.formatted(id)));
     }
 }
