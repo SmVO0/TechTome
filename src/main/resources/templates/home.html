@@ -43,14 +43,99 @@
     </aside>
 
     <main class="main-content">
-        <div class="home-banner">
-            <img th:src="${images[0]}" alt="Featured" class="banner-img">
+
+        <div class="carousel" aria-label="Featured categories">
+
+            <div class="carousel-track">
+
+                <!-- Slide 1 — Laptops -->
+                <a th:href="@{/category/laptops}" class="carousel-slide">
+                    <img src="https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=1200&h=340&fit=crop&auto=format"
+                         alt="Laptops">
+                    <div class="carousel-caption">
+                        <h2>Laptops</h2>
+                        <p>Powerful machines for work and play</p>
+                    </div>
+                </a>
+
+                <!-- Slide 2 — Keyboards -->
+                <a th:href="@{/category/keyboards}" class="carousel-slide">
+                    <img src="https://images.unsplash.com/photo-1587829741301-dc798b83add3?w=1200&h=340&fit=crop&auto=format"
+                         alt="Keyboards">
+                    <div class="carousel-caption">
+                        <h2>Keyboards</h2>
+                        <p>Mechanical and membrane keyboards for every typist</p>
+                    </div>
+                </a>
+
+                <!-- Slide 3 — Monitors -->
+                <a th:href="@{/category/monitors}" class="carousel-slide">
+                    <img src="https://images.unsplash.com/photo-1527443224154-c4a573d5b6a4?w=1200&h=340&fit=crop&auto=format"
+                         alt="Monitors">
+                    <div class="carousel-caption">
+                        <h2>Monitors</h2>
+                        <p>Crystal-clear displays for any setup</p>
+                    </div>
+                </a>
+
+            </div>
+
+            <!-- Navigation arrows -->
+            <button type="button" class="carousel-btn carousel-prev" aria-label="Previous slide">&#8249;</button>
+            <button type="button" class="carousel-btn carousel-next" aria-label="Next slide">&#8250;</button>
+
+            <!-- Dot indicators -->
+            <div class="carousel-dots" role="tablist">
+                <button type="button" class="carousel-dot active" aria-label="Slide 1"></button>
+                <button type="button" class="carousel-dot" aria-label="Slide 2"></button>
+                <button type="button" class="carousel-dot" aria-label="Slide 3"></button>
+            </div>
+
         </div>
+
     </main>
 
 </div>
 
 <footer th:insert="fragments/footer :: footer"></footer>
+
+<script>
+(function () {
+    const track  = document.querySelector('.carousel-track');
+    const slides = document.querySelectorAll('.carousel-slide');
+    const dots   = document.querySelectorAll('.carousel-dot');
+    const prev   = document.querySelector('.carousel-prev');
+    const next   = document.querySelector('.carousel-next');
+    let current  = 0;
+    let timer;
+
+    function goTo(index) {
+        current = (index + slides.length) % slides.length;
+        track.style.transform = 'translateX(-' + (current * 100) + '%)';
+        dots.forEach(function (d, i) { d.classList.toggle('active', i === current); });
+    }
+
+    function startAutoPlay() {
+        timer = setInterval(function () { goTo(current + 1); }, 4500);
+    }
+
+    function stopAutoPlay() {
+        clearInterval(timer);
+    }
+
+    prev.addEventListener('click', function () { stopAutoPlay(); goTo(current - 1); startAutoPlay(); });
+    next.addEventListener('click', function () { stopAutoPlay(); goTo(current + 1); startAutoPlay(); });
+    dots.forEach(function (dot, i) {
+        dot.addEventListener('click', function () { stopAutoPlay(); goTo(i); startAutoPlay(); });
+    });
+
+    var carousel = document.querySelector('.carousel');
+    carousel.addEventListener('mouseenter', stopAutoPlay);
+    carousel.addEventListener('mouseleave', startAutoPlay);
+
+    startAutoPlay();
+}());
+</script>
 
 </body>
 </html>

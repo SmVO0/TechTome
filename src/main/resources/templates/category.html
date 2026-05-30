@@ -44,12 +44,6 @@
     </aside>
 
     <main class="main-content">
-        <div class="promotions">
-            <a th:href="@{/promotions/new}">What's New</a>
-            <a th:href="@{/promotions/bestseller}">Bestseller</a>
-            <a th:href="@{/promotions/promotion}">Promotions</a>
-        </div>
-
         <div class="items-container">
             <div class="item" th:each="item : ${items}">
                 <a th:href="@{'/item/' + ${item.id}}">
