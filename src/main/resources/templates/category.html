@@ -1,10 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TechTome</title>
-    <link rel="stylesheet" href="/css/index.css">
     <link rel="stylesheet" href="/css/common.css">
     <link rel="stylesheet" href="/css/home.css">
     <link rel="stylesheet" href="/css/category.css">
@@ -13,19 +12,19 @@
 
 <header>
     <div class="navbar">
-        <a th:href="@{/}" ><img src="/images/header/Logo.png" alt="Logo Image" class="logo"></a>
+        <a th:href="@{/}"><img src="/images/header/Logo.png" alt="TechTome" class="logo"></a>
         <div class="search-box">
-            <label>
-                <input type="text" class="search-bar" placeholder="Search...">
-            </label>
-            <button class="search-btn"><img src="/images/header/search.png" alt="Search Icon" class="search-icon"></button>
+            <input type="text" class="search-bar" placeholder="Search TechTome...">
+            <button type="button" class="search-btn">
+                <img src="/images/header/search.png" alt="Search" class="search-icon">
+            </button>
         </div>
         <div class="icons">
-            <a th:href="@{'/shopping/'}">
-                <img src="/images/header/shopping_cart.png" alt="Shopping cart Picture" class="shopping-cart">
+            <a th:href="@{/shopping}" aria-label="Shopping cart">
+                <img src="/images/header/shopping_cart.png" alt="Cart" class="nav-icon">
             </a>
-            <a th:href="@{'/users/profile'}">
-                <img src="/images/header/Profile.png" alt="Profile Picture" class="profile-picture">
+            <a th:href="@{/users/profile}" aria-label="Profile">
+                <img src="/images/header/Profile.png" alt="Profile" class="nav-icon">
             </a>
         </div>
     </div>
@@ -33,69 +32,48 @@
 
 <div class="main-container">
 
-    <div class="sidebar">
-        <div class="menu">
-            <a th:href="@{'/home'}">
-                <button>HOME</button>
-            </a>
-            <a th:href="@{'/category/computers'}">
-                <button>COMPUTERS</button>
-            </a>
-            <a th:href="@{'/category/laptops'}">
-                <button>LAPTOPS</button>
-            </a>
-            <a th:href="@{'/category/keyboards'}">
-                <button>KEYBOARDS</button>
-            </a>
-            <a th:href="@{'/category/mice'}">
-                <button>MICE</button>
-            </a>
-            <a th:href="@{'/categorys/monitors'}">
-                <button>MONITORS</button>
-            </a>
-        </div>
-    </div>
+    <aside class="sidebar">
+        <nav class="menu">
+            <a th:href="@{/home}">Home</a>
+            <a th:href="@{/category/computers}">Computers</a>
+            <a th:href="@{/category/laptops}">Laptops</a>
+            <a th:href="@{/category/keyboards}">Keyboards</a>
+            <a th:href="@{/category/mice}">Mice</a>
+            <a th:href="@{/category/monitors}">Monitors</a>
+        </nav>
+    </aside>
 
-    <div class="main-content">
+    <main class="main-content">
         <div class="promotions">
-            <a th:href="@{'/promotions/new'}">
-                <button>WHAT'S NEW</button>
-            </a>
-            <a th:href="@{'/promotions/bestseller'}">
-                <button>BESTSELLER</button>
-            </a>
-            <a th:href="@{'/promotions/promotion'}">
-                <button>PROMOTIONS</button>
-            </a>
-
+            <a th:href="@{/promotions/new}">What's New</a>
+            <a th:href="@{/promotions/bestseller}">Bestseller</a>
+            <a th:href="@{/promotions/promotion}">Promotions</a>
         </div>
+
         <div class="items-container">
             <div class="item" th:each="item : ${items}">
-                <a th:href="@{'item/' + ${item.id}}">
+                <a th:href="@{'/item/' + ${item.id}}">
                     <img th:src="${item.image}" alt="Item Image" class="item-image">
                     <p th:text="${item.name}">Item name</p>
                 </a>
                 <hr>
-
                 <div class="bottom-item">
                     <div class="price-container">
                         <p>Price</p>
-                        <p th:text="${item.price} + '$' "></p>
+                        <p th:text="'$' + ${item.price}"></p>
                     </div>
-                    <button>Add to Cart</button>
+                    <form th:action="@{/shopping/add}" method="post">
+                        <input type="hidden" name="itemId" th:value="${item.id}">
+                        <button type="submit">Add to Cart</button>
+                    </form>
                 </div>
             </div>
-
         </div>
-    </div>
+    </main>
 
-    <div class="sidebar">
-        <label></label>
-    </div>
 </div>
 
 <footer th:insert="fragments/footer :: footer"></footer>
 
 </body>
-
 </html>

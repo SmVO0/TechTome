@@ -1,38 +1,39 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login Page</title>
-    <link rel="stylesheet" type="text/css" href="/css/common.css">
+    <title>Sign In – TechTome</title>
+    <link rel="stylesheet" href="/css/common.css">
 </head>
 <body>
 
 <header>
     <div class="navbar">
-        <a th:href="@{/}" ><img src="/images/header/Logo.png" alt="Logo Image" class="logo"></a>
-
+        <a th:href="@{/}"><img src="/images/header/Logo.png" alt="TechTome" class="logo"></a>
     </div>
 </header>
 
-<div class="login-container">
-    <h1>Log In</h1>
-    <form class="form" th:action="@{/login}" th:method="POST" th:object="${loginRequest}">
+<main class="page-content">
+    <div class="login-container">
+        <h1>Sign In</h1>
+        <form class="form" th:action="@{/login}" method="post" th:object="${loginRequest}">
 
-        <label for="email">E-mail</label>
-        <input type="email" id="email" name="email" th:field="*{email}" required>
+            <label for="email">Email</label>
+            <input type="email" id="email" name="email" th:field="*{email}" required>
 
-        <label for="password">Password</label>
-        <input type="password" id="password" name="password" th:field="*{password}" min=8 required>
+            <label for="password">Password</label>
+            <input type="password" id="password" name="password" th:field="*{password}" required>
 
-        <p class="alert-warning" th:if="${error}" th:text="${error}"></p>
+            <p class="alert-warning" th:if="${error}" th:text="${error}"></p>
 
-
-        <button type="submit" class="login-btn">Log In</button>
-    </form>
-    <p>Don’t have an account? <a th:href="@{register}">CLICK HERE</a></p>
-</div>
+            <button type="submit" class="login-btn">Sign In</button>
+        </form>
+        <p>Don't have an account? <a th:href="@{/register}">Create one</a></p>
+    </div>
+</main>
 
 <footer th:insert="fragments/footer :: footer"></footer>
+
 </body>
 </html>

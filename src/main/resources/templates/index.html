@@ -1,24 +1,35 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TechTome</title>
-    <link rel="stylesheet" type="text/css" href="/css/common.css">
-    <link rel="stylesheet" type="text/css" href="/css/index.css">
+    <link rel="stylesheet" href="/css/common.css">
+    <link rel="stylesheet" href="/css/index.css">
 </head>
 <body>
+
 <header>
     <nav class="navbar">
-        <a th:href="@{/login}" class="button login">Login</a>
-        <a th:href="@{/register}" class="button register">Register</a>
+        <img src="/images/header/Logo.png" alt="TechTome" class="logo">
+        <div style="display:flex;gap:12px;">
+            <a th:href="@{/login}" class="button">Sign in</a>
+            <a th:href="@{/register}" class="button">Create account</a>
+        </div>
     </nav>
 </header>
 
-<!--<div class="logo-container">-->
-<!--    <img src="/images/header/Logo.png" alt="Logo Image">-->
-<!--</div>-->
+<main class="hero">
+    <img src="/images/header/Logo.png" alt="TechTome" class="logo-hero">
+    <h1>Your Tech Store</h1>
+    <p>Browse computers, laptops, keyboards, and more — everything you need, all in one place.</p>
+    <div class="hero-actions">
+        <a th:href="@{/login}" class="btn-hero-primary">Shop Now</a>
+        <a th:href="@{/register}" class="btn-hero-secondary">Create Account</a>
+    </div>
+</main>
 
 <footer th:insert="fragments/footer :: footer"></footer>
+
 </body>
 </html>

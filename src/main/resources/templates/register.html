@@ -1,49 +1,44 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Register</title>
-    <link rel="stylesheet" type="text/css" href="/css/common.css">
+    <title>Create Account – TechTome</title>
+    <link rel="stylesheet" href="/css/common.css">
 </head>
 <body>
 
 <header>
     <div class="navbar">
-        <a th:href="@{/}" ><img src="/images/header/Logo.png" alt="Logo Image" class="logo"></a>
-
+        <a th:href="@{/}"><img src="/images/header/Logo.png" alt="TechTome" class="logo"></a>
     </div>
 </header>
 
-<div class="register-container">
+<main class="page-content">
+    <div class="register-container">
+        <h1>Create Account</h1>
 
-    <h1>Sign Up</h1>
+        <form class="form" th:action="@{/register}" method="post" th:object="${registerRequest}">
 
-    <form class="form"
-          th:action="@{/register}"
-          th:method="POST"
-          th:object="${registerRequest}">
+            <label for="username">Username</label>
+            <input type="text" id="username" placeholder="Username" th:field="*{username}" required>
+            <p class="alert-warning" th:if="${#fields.hasErrors('username')}" th:errors="*{username}"></p>
 
-        <label for="username">Username</label>
+            <label for="email">Email</label>
+            <input type="email" id="email" placeholder="Email" th:field="*{email}" required>
+            <p class="alert-warning" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></p>
 
-        <input type="text" placeholder="Username" id="username" th:field="*{username}" required>
-        <p class="alert-warning" th:if="${#fields.hasErrors('username')}" th:errors="*{username}"></p>
+            <label for="password">Password</label>
+            <input type="password" id="password" placeholder="Password" th:field="*{password}" required>
+            <p class="alert-warning" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></p>
 
-        <label for="password">Password</label>
-        <input type="password" min=8 placeholder="Password" id="password" th:field="*{password}" required>
-        <p class="alert-warning" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></p>
+            <button type="submit" class="login-btn">Create Account</button>
+        </form>
+        <p>Already have an account? <a th:href="@{/login}">Sign in</a></p>
+    </div>
+</main>
 
-        <label for="email">E-mail</label>
-        <input type="email" placeholder="Email" id="email" th:field="*{email}" required>
+<footer th:insert="fragments/footer :: footer"></footer>
 
-        <p class="alert-warning" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></p>
-
-
-        <button class="login-btn">Register</button>
-    </form>
-    <p>Already have an account? <a href="/login">CLICK HERE</a></p>
-</div>
-
-<th:block th:insert="fragments/footer :: footer"></th:block>
 </body>
 </html>

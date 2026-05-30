@@ -1,16 +1,82 @@
-.logo-container {
-    height: 80%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    background-color: #E3F2FD;
-    margin-left: 100px;
-    margin-right: 100px;
+/* =============================================
+   Landing page hero
+   ============================================= */
+.hero {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(160deg, var(--navy) 0%, var(--navy-mid) 55%, var(--blue) 100%);
+  text-align: center;
+  padding: 72px 24px;
+  min-height: calc(100vh - var(--header-h));
 }
 
-.logo-container img{
+.hero .logo-hero {
+  height: 130px;
+  margin-bottom: 32px;
+  filter: drop-shadow(0 4px 16px rgba(0,0,0,0.35));
+}
 
-    display: inline-block;
-    width: 75%;
-    height: auto;
+.hero h1 {
+  font-size: 38px;
+  font-weight: 800;
+  color: var(--white);
+  margin: 0 0 12px;
+  letter-spacing: -0.5px;
+}
+
+.hero p {
+  font-size: 16px;
+  color: rgba(255,255,255,0.72);
+  margin: 0 0 40px;
+  max-width: 460px;
+  line-height: 1.6;
+}
+
+.hero-actions {
+  display: flex;
+  gap: 14px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.btn-hero-primary {
+  padding: 13px 36px;
+  background-color: var(--amber);
+  color: var(--text-dark);
+  font-size: 15px;
+  font-weight: 700;
+  border: none;
+  border-radius: var(--radius);
+  cursor: pointer;
+  text-decoration: none;
+  letter-spacing: 0.02em;
+  transition: background-color 0.15s, transform 0.15s;
+  display: inline-block;
+}
+
+.btn-hero-primary:hover {
+  background-color: var(--amber-hover);
+  transform: translateY(-1px);
+}
+
+.btn-hero-secondary {
+  padding: 13px 36px;
+  background-color: transparent;
+  color: var(--white);
+  font-size: 15px;
+  font-weight: 600;
+  border: 2px solid rgba(255,255,255,0.50);
+  border-radius: var(--radius);
+  cursor: pointer;
+  text-decoration: none;
+  transition: border-color 0.15s, background-color 0.15s;
+  display: inline-block;
+}
+
+.btn-hero-secondary:hover {
+  border-color: var(--white);
+  background-color: rgba(255,255,255,0.10);
 }
