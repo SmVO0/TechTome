@@ -1,6 +1,7 @@
 package com.SVO.TechTome.models;
 
 import com.SVO.TechTome.models.enums.OrderStatus;
+import com.SVO.TechTome.models.enums.PaymentStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -38,6 +39,28 @@ public class Order {
 
     @Column(nullable = false)
     private BigDecimal totalPrice;
+
+    @Column(scale = 2)
+    private BigDecimal deliveryCost;
+
+    @Enumerated(EnumType.STRING)
+    @Column(length = 20)
+    private PaymentStatus paymentStatus;
+
+    @Column(length = 150)
+    private String recipientName;
+
+    @Column(length = 20)
+    private String recipientPhone;
+
+    @Column(length = 300)
+    private String deliveryAddress;
+
+    @Column(length = 100)
+    private String deliveryCity;
+
+    @Column(length = 50)
+    private String trackingNumber;
 
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default

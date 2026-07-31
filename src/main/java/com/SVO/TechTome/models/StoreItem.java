@@ -36,6 +36,11 @@ public class StoreItem {
     @Column(nullable = false, columnDefinition = "int default 100")
     private int stock;
 
+    private boolean featured;
+
+    @Column
+    private String shortDescription;
+
     @ManyToOne
     @JoinColumn(name = "category_id", nullable = false)
     private Category category;
