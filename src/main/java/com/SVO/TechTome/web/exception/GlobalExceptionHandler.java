@@ -6,6 +6,7 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 import static com.SVO.TechTome.constants.Constants.*;
 
@@ -30,6 +31,15 @@ public class GlobalExceptionHandler {
         mav.setStatus(HttpStatus.FORBIDDEN);
         mav.addObject(STATUS_CODE, HttpStatus.FORBIDDEN.value());
         mav.addObject(MESSAGE, "You do not have permission to access this page.");
+        return mav;
+    }
+
+    @ExceptionHandler(NoResourceFoundException.class)
+    public ModelAndView handleNoResource(NoResourceFoundException ex) {
+        ModelAndView mav = new ModelAndView(ERROR_VIEW);
+        mav.setStatus(HttpStatus.NOT_FOUND);
+        mav.addObject(STATUS_CODE, HttpStatus.NOT_FOUND.value());
+        mav.addObject(MESSAGE, "The requested resource was not found.");
         return mav;
     }
 

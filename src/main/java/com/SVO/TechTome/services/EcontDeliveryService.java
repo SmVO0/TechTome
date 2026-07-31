@@ -7,7 +7,6 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 import java.math.BigDecimal;
@@ -43,7 +42,7 @@ public class EcontDeliveryService implements DeliveryService {
             log.info("Econt shipment created: tracking [{}] for order [{}].", tracking, order.getId());
             return tracking;
 
-        } catch (RestClientException e) {
+        } catch (Exception e) {
             log.warn("Econt shipment creation failed for order [{}]: {}", order.getId(), e.getMessage());
             return null;
         }
@@ -65,7 +64,7 @@ public class EcontDeliveryService implements DeliveryService {
                     && response.label().services().cdAmount() != null) {
                 return response.label().services().cdAmount();
             }
-        } catch (RestClientException e) {
+        } catch (Exception e) {
             log.warn("Econt cost calculation failed for city [{}]: {}", cityName, e.getMessage());
         }
         return DEFAULT_DELIVERY_COST;

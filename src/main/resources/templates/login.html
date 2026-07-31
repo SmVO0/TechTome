@@ -10,7 +10,7 @@
 
 <header>
     <div class="navbar">
-        <a th:href="@{/}"><img src="/images/header/Logo.png" alt="TechTome" class="logo"></a>
+        <a th:href="@{/home}"><img src="/images/header/Logo.png" alt="TechTome" class="logo"></a>
     </div>
 </header>
 
@@ -33,7 +33,7 @@
     </div>
 </main>
 
-<footer th:insert="fragments/footer :: footer"></footer>
+<footer th:insert="~{fragments/footer :: footer}"></footer>
 
 </body>
 </html>

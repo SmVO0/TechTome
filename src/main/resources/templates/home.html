@@ -32,7 +32,7 @@
 <div class="main-container">
 
     <aside class="sidebar">
-        <nav class="menu">
+        <nav class="menu" aria-label="Category navigation">
             <a th:href="@{/home}">Home</a>
             <a th:href="@{/category/computers}">Computers</a>
             <a th:href="@{/category/laptops}">Laptops</a>
@@ -97,7 +97,7 @@
 
 </div>
 
-<footer th:insert="fragments/footer :: footer"></footer>
+<footer th:insert="~{fragments/footer :: footer}"></footer>
 
 <script>
 (function () {

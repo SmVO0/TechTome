@@ -88,23 +88,19 @@ public class OrderService {
                 .build();
         Order saved = orderRepository.save(order);
 
-        List<OrderItem> orderItems = cart.getItems().stream()
-                .map(ci -> {
-                    StoreItem si = ci.getStoreItem();
-                    if (si.getStock() > 0) {
-                        si.setStock(si.getStock() - ci.getQuantity());
-                        storeItemRepository.save(si);
-                    }
-                    return OrderItem.builder()
-                            .order(saved)
-                            .storeItem(si)
-                            .quantity(ci.getQuantity())
-                            .unitPrice(ci.getUnitPrice())
-                            .build();
-                })
-                .toList();
-
-        saved.setItems(orderItems);
+        cart.getItems().forEach(ci -> {
+            StoreItem si = ci.getStoreItem();
+            if (si.getStock() > 0) {
+                si.setStock(si.getStock() - ci.getQuantity());
+                storeItemRepository.save(si);
+            }
+            saved.getItems().add(OrderItem.builder()
+                    .order(saved)
+                    .storeItem(si)
+                    .quantity(ci.getQuantity())
+                    .unitPrice(ci.getUnitPrice())
+                    .build());
+        });
 
         String trackingNumber = deliveryService.createShipment(saved);
         saved.setTrackingNumber(trackingNumber);
