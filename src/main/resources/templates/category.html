@@ -47,16 +47,17 @@
         <div class="items-container">
             <div class="item" th:each="item : ${items}">
                 <a th:href="@{'/item/' + ${item.id}}">
-                    <img th:src="${item.image}" alt="Item Image" class="item-image">
+                    <img th:src="${item.image}" alt="Item" class="item-image">
                     <p th:text="${item.name}">Item name</p>
                 </a>
                 <hr>
                 <div class="bottom-item">
                     <div class="price-container">
                         <p>Price</p>
-                        <p th:text="'$' + ${item.price}"></p>
+                        <p th:text="'€' + ${#numbers.formatDecimal(item.price, 1, 'NONE', 2, 'POINT')}"></p>
                     </div>
-                    <form th:action="@{/shopping/add}" method="post">
+                    <form th:action="@{/shopping/add}" method="post"
+                          th:attr="data-item-name=${item.name}">
                         <input type="hidden" name="itemId" th:value="${item.id}">
                         <button type="submit">Add to Cart</button>
                     </form>
@@ -69,5 +70,6 @@
 
 <footer th:insert="fragments/footer :: footer"></footer>
 
+<script src="/js/cart.js"></script>
 </body>
 </html>

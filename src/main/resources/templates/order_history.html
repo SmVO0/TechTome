@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order History – TechTome</title>
+    <link rel="stylesheet" href="/css/common.css">
+    <link rel="stylesheet" href="/css/home.css">
+</head>
+<body>
+
+<header>
+    <div class="navbar">
+        <a th:href="@{/}"><img src="/images/header/Logo.png" alt="TechTome" class="logo"></a>
+        <div class="search-box">
+            <input type="text" class="search-bar" placeholder="Search TechTome...">
+            <button type="button" class="search-btn">
+                <img src="/images/header/search.png" alt="Search" class="search-icon">
+            </button>
+        </div>
+        <div class="icons">
+            <a th:href="@{/shopping}" aria-label="Shopping cart">
+                <img src="/images/header/shopping_cart.png" alt="Cart" class="nav-icon">
+            </a>
+            <a th:href="@{/users/profile}" aria-label="Profile">
+                <img src="/images/header/Profile.png" alt="Profile" class="nav-icon">
+            </a>
+        </div>
+    </div>
+</header>
+
+<div class="main-container">
+
+    <aside class="sidebar">
+        <nav class="menu">
+            <a th:href="@{/home}">Home</a>
+            <a th:href="@{/category/computers}">Computers</a>
+            <a th:href="@{/category/laptops}">Laptops</a>
+            <a th:href="@{/category/keyboards}">Keyboards</a>
+            <a th:href="@{/category/mice}">Mice</a>
+            <a th:href="@{/category/monitors}">Monitors</a>
+        </nav>
+    </aside>
+
+    <main class="main-content">
+        <div class="orders-container">
+
+            <h2 class="orders-title">Order History</h2>
+
+            <div th:if="${#lists.isEmpty(orders)}" class="cart-empty">
+                <p>You have not placed any orders yet.</p>
+                <a th:href="@{/home}" class="btn-continue">Start Shopping</a>
+            </div>
+
+            <div th:unless="${#lists.isEmpty(orders)}">
+                <table class="admin-table">
+                    <thead>
+                        <tr>
+                            <th>Order ID</th>
+                            <th>Date</th>
+                            <th>Total</th>
+                            <th>Status</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="order : ${orders}">
+                            <td class="order-id-cell"
+                                th:text="${#strings.substring(order.id.toString(), 0, 8) + '...'}"></td>
+                            <td th:text="${#temporals.format(order.createdOn, 'dd MMM yyyy')}"></td>
+                            <td th:text="'€' + ${#numbers.formatDecimal(order.totalPrice, 1, 'NONE', 2, 'POINT')}"></td>
+                            <td>
+                                <span class="status-badge"
+                                      th:classappend="${order.status.name() == 'DELIVERED'} ? 'status-delivered'
+                                                    : (${order.status.name() == 'CANCELLED'} ? 'status-cancelled'
+                                                    : 'status-pending')"
+                                      th:text="${order.status.name()}">PENDING</span>
+                            </td>
+                            <td>
+                                <a th:href="@{'/orders/' + ${order.id}}" class="order-detail-link">View</a>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+    </main>
+
+</div>
+
+<footer th:insert="fragments/footer :: footer"></footer>
+
+</body>
+</html>

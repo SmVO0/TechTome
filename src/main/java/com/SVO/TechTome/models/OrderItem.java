@@ -14,23 +14,23 @@ import java.util.UUID;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ShoppingCartItem {
+public class OrderItem {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
     @ManyToOne(optional = false)
-    @JoinColumn(name = "shopping_cart_id")
-    private ShoppingCart cart;
+    @JoinColumn(name = "order_id")
+    private Order order;
 
     @ManyToOne(optional = false)
     @JoinColumn(name = "store_item_id")
     private StoreItem storeItem;
 
-    @Column(nullable = false, columnDefinition = "decimal(19,4) default 0.0000")
-    private BigDecimal unitPrice;
-
     @Column(nullable = false)
     private int quantity;
+
+    @Column(nullable = false)
+    private BigDecimal unitPrice;
 }

@@ -31,7 +31,7 @@
 
 <div class="main-container">
 
-    <aside class="sidebar">
+    <aside class="sidebar" aria-label="Category navigation">
         <nav class="menu">
             <a th:href="@{/home}">Home</a>
             <a th:href="@{/category/computers}">Computers</a>
@@ -74,7 +74,7 @@
                                          class="cart-item-img">
                                 </td>
                                 <td class="cart-item-name" th:text="${cartItem.storeItem.name}"></td>
-                                <td th:text="'$' + ${cartItem.storeItem.price}"></td>
+                                <td th:text="'€' + ${#numbers.formatDecimal(cartItem.unitPrice, 1, 'NONE', 2, 'POINT')}"></td>
                                 <td>
                                     <div class="cart-qty-controls">
                                         <form th:action="@{/shopping/remove}" method="post">
@@ -88,7 +88,7 @@
                                         </form>
                                     </div>
                                 </td>
-                                <td th:text="'$' + ${cartItem.storeItem.price * cartItem.quantity}"></td>
+                                <td th:text="'€' + ${#numbers.formatDecimal(cartItem.unitPrice * cartItem.quantity, 1, 'NONE', 2, 'POINT')}"></td>
                             </tr>
                         </tbody>
                     </table>
@@ -96,11 +96,11 @@
             </section>
 
             <!-- Order summary -->
-            <aside class="cart-summary" th:unless="${#lists.isEmpty(items)}">
+            <aside class="cart-summary" aria-label="Order summary" th:unless="${#lists.isEmpty(items)}">
                 <h3>Order Summary</h3>
                 <div class="summary-row">
                     <span>Subtotal</span>
-                    <span th:text="'$' + ${totalPrice}"></span>
+                    <span th:text="'€' + ${#numbers.formatDecimal(totalPrice, 1, 'NONE', 2, 'POINT')}"></span>
                 </div>
                 <div class="summary-row">
                     <span>Shipping</span>
@@ -109,9 +109,11 @@
                 <hr class="summary-divider">
                 <div class="summary-row summary-total">
                     <span>Total</span>
-                    <span th:text="'$' + ${totalPrice}"></span>
+                    <span th:text="'€' + ${#numbers.formatDecimal(totalPrice, 1, 'NONE', 2, 'POINT')}"></span>
                 </div>
-                <button type="button" class="btn-checkout">Proceed to Checkout</button>
+                <form th:action="@{/checkout}" method="post">
+                    <button type="submit" class="btn-checkout">Proceed to Checkout</button>
+                </form>
                 <a th:href="@{/home}" class="btn-continue">Continue Shopping</a>
             </aside>
 

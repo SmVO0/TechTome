@@ -33,6 +33,9 @@ public class StoreItem {
     @Column(nullable = false, unique = true)
     private String image;
 
+    @Column(nullable = false, columnDefinition = "int default 100")
+    private int stock;
+
     @ManyToOne
     @JoinColumn(name = "category_id", nullable = false)
     private Category category;

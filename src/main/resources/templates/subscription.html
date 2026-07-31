@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Subscription – TechTome</title>
+    <link rel="stylesheet" href="/css/common.css">
+    <link rel="stylesheet" href="/css/home.css">
+</head>
+<body>
+
+<header>
+    <div class="navbar">
+        <a th:href="@{/}"><img src="/images/header/Logo.png" alt="TechTome" class="logo"></a>
+        <div class="search-box">
+            <input type="text" class="search-bar" placeholder="Search TechTome...">
+            <button type="button" class="search-btn">
+                <img src="/images/header/search.png" alt="Search" class="search-icon">
+            </button>
+        </div>
+        <div class="icons">
+            <a th:href="@{/shopping}" aria-label="Shopping cart">
+                <img src="/images/header/shopping_cart.png" alt="Cart" class="nav-icon">
+            </a>
+            <a th:href="@{/users/profile}" aria-label="Profile">
+                <img src="/images/header/Profile.png" alt="Profile" class="nav-icon">
+            </a>
+        </div>
+    </div>
+</header>
+
+<div class="main-container">
+
+    <aside class="sidebar">
+        <nav class="menu">
+            <a th:href="@{/home}">Home</a>
+            <a th:href="@{/category/computers}">Computers</a>
+            <a th:href="@{/category/laptops}">Laptops</a>
+            <a th:href="@{/category/keyboards}">Keyboards</a>
+            <a th:href="@{/category/mice}">Mice</a>
+            <a th:href="@{/category/monitors}">Monitors</a>
+        </nav>
+    </aside>
+
+    <main class="main-content">
+        <div class="profile">
+
+            <div class="profile-name">
+                <h1>Subscription</h1>
+            </div>
+
+            <div th:if="${#lists.isEmpty(subscriptions)}" class="cart-empty">
+                <p>No active subscription found.</p>
+            </div>
+
+            <div th:unless="${#lists.isEmpty(subscriptions)}">
+                <div class="subscription-card" th:each="sub : ${subscriptions}">
+                    <div class="info-grid">
+                        <div class="info-row">
+                            <span class="info-label">Plan</span>
+                            <span class="info-value" th:text="${sub.type.name()}">DEFAULT</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Status</span>
+                            <span class="status-badge"
+                                  th:classappend="${sub.status.name() == 'ACTIVE'} ? 'status-delivered' : 'status-cancelled'"
+                                  th:text="${sub.status.name()}">ACTIVE</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Price</span>
+                            <span class="info-value" th:text="'€' + ${#numbers.formatDecimal(sub.price, 1, 'NONE', 2, 'POINT')}">€0.00</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Started</span>
+                            <span class="info-value"
+                                  th:text="${#temporals.format(sub.createdOn, 'dd MMM yyyy')}">—</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Renews</span>
+                            <span class="info-value"
+                                  th:text="${#temporals.format(sub.completedOn, 'dd MMM yyyy')}">—</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <a th:href="@{/users/profile}" class="btn-continue" style="margin-top: 24px; display:inline-block;">
+                Back to Profile
+            </a>
+
+        </div>
+    </main>
+
+</div>
+
+<footer th:insert="fragments/footer :: footer"></footer>
+
+</body>
+</html>

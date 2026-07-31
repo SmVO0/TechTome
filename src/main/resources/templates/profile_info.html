@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Profile – TechTome</title>
+    <title>Personal Info – TechTome</title>
     <link rel="stylesheet" href="/css/common.css">
     <link rel="stylesheet" href="/css/home.css">
 </head>
@@ -46,21 +46,37 @@
         <div class="profile">
 
             <div class="profile-name">
-                <h1 th:text="${user.username}">Username</h1>
+                <h1>Personal Information</h1>
             </div>
 
-            <div class="profile-image">
-                <img th:src="${user.profilePicture}"
-                     th:alt="${user.username}"
-                     class="profile-avatar">
+            <div class="info-grid">
+                <div class="info-row">
+                    <span class="info-label">Username</span>
+                    <span class="info-value" th:text="${user.username}">—</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Email</span>
+                    <span class="info-value" th:text="${user.email}">—</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">First Name</span>
+                    <span class="info-value"
+                          th:text="${user.firstName != null ? user.firstName : '—'}">—</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Last Name</span>
+                    <span class="info-value"
+                          th:text="${user.lastName != null ? user.lastName : '—'}">—</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Role</span>
+                    <span class="info-value" th:text="${user.role.name()}">USER</span>
+                </div>
             </div>
 
-            <div class="profile-info">
-                <a th:href="@{/users/profile/info}">Personal info</a>
-                <a th:href="@{/orders}">Order history</a>
-                <a th:href="@{/users/subscription}">Manage subscription</a>
-                <a th:if="${user.role.name() == 'ADMIN'}" th:href="@{/users}">Admin panel</a>
-            </div>
+            <a th:href="@{/users/profile}" class="btn-continue" style="margin-top: 16px; display:inline-block;">
+                Back to Profile
+            </a>
 
         </div>
     </main>

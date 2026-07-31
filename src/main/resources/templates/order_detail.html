@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order – TechTome</title>
+    <link rel="stylesheet" href="/css/common.css">
+    <link rel="stylesheet" href="/css/home.css">
+</head>
+<body>
+
+<header>
+    <div class="navbar">
+        <a th:href="@{/}"><img src="/images/header/Logo.png" alt="TechTome" class="logo"></a>
+        <div class="search-box">
+            <input type="text" class="search-bar" placeholder="Search TechTome...">
+            <button type="button" class="search-btn">
+                <img src="/images/header/search.png" alt="Search" class="search-icon">
+            </button>
+        </div>
+        <div class="icons">
+            <a th:href="@{/shopping}" aria-label="Shopping cart">
+                <img src="/images/header/shopping_cart.png" alt="Cart" class="nav-icon">
+            </a>
+            <a th:href="@{/users/profile}" aria-label="Profile">
+                <img src="/images/header/Profile.png" alt="Profile" class="nav-icon">
+            </a>
+        </div>
+    </div>
+</header>
+
+<div class="main-container">
+
+    <aside class="sidebar" aria-label="Category navigation">
+        <nav class="menu">
+            <a th:href="@{/home}">Home</a>
+            <a th:href="@{/category/computers}">Computers</a>
+            <a th:href="@{/category/laptops}">Laptops</a>
+            <a th:href="@{/category/keyboards}">Keyboards</a>
+            <a th:href="@{/category/mice}">Mice</a>
+            <a th:href="@{/category/monitors}">Monitors</a>
+        </nav>
+    </aside>
+
+    <main class="main-content">
+        <div class="cart-layout">
+
+            <!-- Order items -->
+            <section class="cart-items">
+                <h2>Order Confirmation</h2>
+
+                <div class="order-meta">
+                    <p><strong>Order ID:</strong> <span th:text="${order.id}"></span></p>
+                    <p><strong>Placed on:</strong>
+                        <span th:text="${#temporals.format(order.createdOn, 'dd MMM yyyy HH:mm')}"></span></p>
+                    <p><strong>Status:</strong>
+                        <span class="status-badge"
+                              th:classappend="${order.status.name() == 'DELIVERED'} ? 'status-delivered'
+                                            : (${order.status.name() == 'CANCELLED'} ? 'status-cancelled'
+                                            : 'status-pending')"
+                              th:text="${order.status.name()}">PENDING</span>
+                    </p>
+                </div>
+
+                <table class="cart-table">
+                    <thead>
+                        <tr>
+                            <th colspan="2">Item</th>
+                            <th>Unit Price</th>
+                            <th>Quantity</th>
+                            <th>Subtotal</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="oi : ${order.items}">
+                            <td class="cart-item-img-cell">
+                                <img th:src="${oi.storeItem.image}"
+                                     th:alt="${oi.storeItem.name}"
+                                     class="cart-item-img">
+                            </td>
+                            <td class="cart-item-name" th:text="${oi.storeItem.name}"></td>
+                            <td th:text="'€' + ${#numbers.formatDecimal(oi.unitPrice, 1, 'NONE', 2, 'POINT')}"></td>
+                            <td th:text="${oi.quantity}"></td>
+                            <td th:text="'€' + ${#numbers.formatDecimal(oi.unitPrice * oi.quantity, 1, 'NONE', 2, 'POINT')}"></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+
+            <!-- Order summary -->
+            <aside class="cart-summary" aria-label="Order summary">
+                <h3>Order Summary</h3>
+                <div class="summary-row">
+                    <span>Subtotal</span>
+                    <span th:text="'€' + ${#numbers.formatDecimal(order.totalPrice, 1, 'NONE', 2, 'POINT')}"></span>
+                </div>
+                <div class="summary-row">
+                    <span>Shipping</span>
+                    <span class="summary-free">FREE</span>
+                </div>
+                <hr class="summary-divider">
+                <div class="summary-row summary-total">
+                    <span>Total</span>
+                    <span th:text="'€' + ${#numbers.formatDecimal(order.totalPrice, 1, 'NONE', 2, 'POINT')}"></span>
+                </div>
+                <a th:href="@{/orders}" class="btn-continue">View All Orders</a>
+                <a th:href="@{/home}" class="btn-continue">Continue Shopping</a>
+            </aside>
+
+        </div>
+    </main>
+
+</div>
+
+<footer th:insert="fragments/footer :: footer"></footer>
+
+</body>
+</html>

@@ -3,9 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Profile – TechTome</title>
+    <title th:text="${item.name} + ' – TechTome'">Item – TechTome</title>
     <link rel="stylesheet" href="/css/common.css">
     <link rel="stylesheet" href="/css/home.css">
+    <link rel="stylesheet" href="/css/item.css">
 </head>
 <body>
 
@@ -43,23 +44,37 @@
     </aside>
 
     <main class="main-content">
-        <div class="profile">
+        <div class="item-detail">
 
-            <div class="profile-name">
-                <h1 th:text="${user.username}">Username</h1>
+            <div class="item-detail-image-wrap">
+                <img th:src="${item.image}" th:alt="${item.name}" class="item-detail-image">
             </div>
 
-            <div class="profile-image">
-                <img th:src="${user.profilePicture}"
-                     th:alt="${user.username}"
-                     class="profile-avatar">
-            </div>
+            <div class="item-detail-content">
 
-            <div class="profile-info">
-                <a th:href="@{/users/profile/info}">Personal info</a>
-                <a th:href="@{/orders}">Order history</a>
-                <a th:href="@{/users/subscription}">Manage subscription</a>
-                <a th:if="${user.role.name() == 'ADMIN'}" th:href="@{/users}">Admin panel</a>
+                <p class="item-detail-category" th:text="${item.category.name}">Category</p>
+                <h1 class="item-detail-title" th:text="${item.name}">Item Name</h1>
+
+                <p class="item-detail-price" th:text="'€' + ${#numbers.formatDecimal(item.price, 1, 'NONE', 2, 'POINT')}">€0.00</p>
+
+                <p class="item-detail-stock in-stock" th:if="${item.stock > 0}"
+                   th:text="${item.stock} + ' in stock'">In Stock</p>
+                <p class="item-detail-stock out-of-stock" th:unless="${item.stock > 0}">Out of Stock</p>
+
+                <p class="item-detail-desc" th:text="${item.description}">Description</p>
+
+                <form th:action="@{/shopping/add}" method="post" th:if="${item.stock > 0}"
+                      th:attr="data-item-name=${item.name}">
+                    <input type="hidden" name="itemId" th:value="${item.id}">
+                    <button type="submit" class="btn-add-to-cart">Add to Cart</button>
+                </form>
+                <button type="button" class="btn-add-to-cart disabled" disabled th:unless="${item.stock > 0}">
+                    Out of Stock
+                </button>
+
+                <a th:href="@{'/category/' + ${item.category.name.toLowerCase()}}"
+                   class="item-detail-back">← Back to [[${item.category.name}]]</a>
+
             </div>
 
         </div>
@@ -69,5 +84,6 @@
 
 <footer th:insert="fragments/footer :: footer"></footer>
 
+<script src="/js/cart.js"></script>
 </body>
 </html>

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Profile – TechTome</title>
+    <title>Admin – Users – TechTome</title>
     <link rel="stylesheet" href="/css/common.css">
     <link rel="stylesheet" href="/css/home.css">
 </head>
@@ -43,24 +43,39 @@
     </aside>
 
     <main class="main-content">
-        <div class="profile">
+        <div class="admin-panel">
 
-            <div class="profile-name">
-                <h1 th:text="${user.username}">Username</h1>
+            <h2 class="admin-title">All Users</h2>
+
+            <div th:if="${#lists.isEmpty(users)}" class="cart-empty">
+                <p>No users found.</p>
             </div>
 
-            <div class="profile-image">
-                <img th:src="${user.profilePicture}"
-                     th:alt="${user.username}"
-                     class="profile-avatar">
+            <div th:unless="${#lists.isEmpty(users)}">
+                <table class="admin-table">
+                    <thead>
+                        <tr>
+                            <th>Username</th>
+                            <th>Email</th>
+                            <th>Role</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="u : ${users}">
+                            <td th:text="${u.username}"></td>
+                            <td th:text="${u.email}"></td>
+                            <td>
+                                <span class="role-badge"
+                                      th:classappend="${u.role.name() == 'ADMIN'} ? 'role-admin'
+                                                    : (${u.role.name() == 'EDITOR'} ? 'role-editor' : 'role-user')"
+                                      th:text="${u.role.name()}">USER</span>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
 
-            <div class="profile-info">
-                <a th:href="@{/users/profile/info}">Personal info</a>
-                <a th:href="@{/orders}">Order history</a>
-                <a th:href="@{/users/subscription}">Manage subscription</a>
-                <a th:if="${user.role.name() == 'ADMIN'}" th:href="@{/users}">Admin panel</a>
-            </div>
+            <a th:href="@{/users/profile}" class="btn-continue" style="margin-top:24px; display:inline-block;">Back to Profile</a>
 
         </div>
     </main>

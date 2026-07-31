@@ -14,6 +14,7 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.UUID;
 
+import static com.SVO.TechTome.constants.ExceptionMessages.INSUFFICIENT_STOCK;
 import static com.SVO.TechTome.constants.ExceptionMessages.SHOPPING_CART_NOT_FOUND;
 import static com.SVO.TechTome.constants.ExceptionMessages.STORE_ITEM_NOT_FOUND;
 
@@ -44,10 +45,15 @@ public class ShoppingCartService {
                 .orElseGet(() -> ShoppingCartItem.builder()
                         .cart(cart)
                         .storeItem(item)
+                        .unitPrice(item.getPrice())
                         .quantity(0)
                         .build());
 
-        cartItem.setQuantity(cartItem.getQuantity() + 1);
+        int newQty = cartItem.getQuantity() + 1;
+        if (item.getStock() > 0 && newQty > item.getStock()) {
+            throw new DomainException(INSUFFICIENT_STOCK.formatted(item.getName(), item.getStock()));
+        }
+        cartItem.setQuantity(newQty);
         shoppingCartItemRepository.save(cartItem);
         recalculateTotalPrice(cart);
     }
@@ -80,9 +86,18 @@ public class ShoppingCartService {
     private void recalculateTotalPrice(ShoppingCart cart) {
         List<ShoppingCartItem> items = shoppingCartItemRepository.findByCart(cart);
         BigDecimal total = items.stream()
-                .map(ci -> ci.getStoreItem().getPrice().multiply(BigDecimal.valueOf(ci.getQuantity())))
+                .map(ci -> ci.getUnitPrice().multiply(BigDecimal.valueOf(ci.getQuantity())))
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
         cart.setTotalPrice(total);
+        shoppingCartRepository.save(cart);
+    }
+
+    @Transactional
+    public void clearCart(UUID cartId) {
+        ShoppingCart cart = shoppingCartRepository.findById(cartId)
+                .orElseThrow(() -> new DomainException(SHOPPING_CART_NOT_FOUND));
+        cart.getItems().clear();
+        cart.setTotalPrice(BigDecimal.ZERO);
         shoppingCartRepository.save(cart);
     }
 }

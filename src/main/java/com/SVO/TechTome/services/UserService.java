@@ -20,6 +20,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -84,5 +85,9 @@ public class UserService implements UserDetailsService {
 
     public User getById(UUID id) {
         return userRepository.findById(id).orElseThrow(() -> new UsernameNotFoundException(ExceptionMessages.USER_NOT_FOUND_BY_ID.formatted(id)));
+    }
+
+    public List<User> getAllUsers() {
+        return userRepository.findAll();
     }
 }
