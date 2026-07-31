@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wishlist – TechTome</title>
+    <link rel="stylesheet" href="/css/common.css">
+    <link rel="stylesheet" href="/css/home.css">
+    <link rel="stylesheet" href="/css/category.css">
+</head>
+<body>
+
+<header>
+    <div class="navbar">
+        <a th:href="@{/}"><img src="/images/header/Logo.png" alt="TechTome" class="logo"></a>
+        <form class="search-box" th:action="@{/search}" method="get">
+            <input type="text" name="q" class="search-bar" placeholder="Search TechTome...">
+            <button type="submit" class="search-btn">
+                <img src="/images/header/search.png" alt="Search" class="search-icon">
+            </button>
+        </form>
+        <div class="icons">
+            <a th:href="@{/shopping}" aria-label="Shopping cart">
+                <img src="/images/header/shopping_cart.png" alt="Cart" class="nav-icon">
+            </a>
+            <a th:href="@{/users/profile}" aria-label="Profile">
+                <img src="/images/header/Profile.png" alt="Profile" class="nav-icon">
+            </a>
+        </div>
+    </div>
+</header>
+
+<div class="main-container">
+
+    <aside class="sidebar">
+        <nav class="menu">
+            <a th:href="@{/home}">Home</a>
+            <a th:href="@{/category/computers}">Computers</a>
+            <a th:href="@{/category/laptops}">Laptops</a>
+            <a th:href="@{/category/keyboards}">Keyboards</a>
+            <a th:href="@{/category/mice}">Mice</a>
+            <a th:href="@{/category/monitors}">Monitors</a>
+        </nav>
+    </aside>
+
+    <main class="main-content">
+        <h2>My Wishlist</h2>
+
+        <div th:if="${#lists.isEmpty(items)}" class="cart-empty">
+            <p>Your wishlist is empty.</p>
+            <a th:href="@{/home}" class="btn-continue">Browse Products</a>
+        </div>
+
+        <div th:unless="${#lists.isEmpty(items)}" class="items-container">
+            <div class="item" th:each="wi : ${items}">
+                <a th:href="@{'/item/' + ${wi.storeItem.id}}">
+                    <img th:src="${wi.storeItem.image}" th:alt="${wi.storeItem.name}" class="item-image">
+                    <p th:text="${wi.storeItem.name}">Item name</p>
+                </a>
+                <hr>
+                <div class="bottom-item">
+                    <div class="price-container">
+                        <p>Price</p>
+                        <p th:text="'€' + ${#numbers.formatDecimal(wi.storeItem.price, 1, 'NONE', 2, 'POINT')}"></p>
+                    </div>
+                    <div style="display:flex; flex-direction:column; gap:0.4rem;">
+                        <form th:action="@{/shopping/add}" method="post"
+                              th:attr="data-item-name=${wi.storeItem.name}">
+                            <input type="hidden" name="itemId" th:value="${wi.storeItem.id}">
+                            <button type="submit">Add to Cart</button>
+                        </form>
+                        <form th:action="@{/wishlist/toggle}" method="post">
+                            <input type="hidden" name="itemId" th:value="${wi.storeItem.id}">
+                            <input type="hidden" name="redirectUrl" value="/wishlist">
+                            <button type="submit" class="btn-wishlist">♥ Remove</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+</div>
+
+<footer th:insert="fragments/footer :: footer"></footer>
+
+<script src="/js/cart.js"></script>
+</body>
+</html>

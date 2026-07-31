@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -71,6 +72,16 @@
                 <button type="button" class="btn-add-to-cart disabled" disabled th:unless="${item.stock > 0}">
                     Out of Stock
                 </button>
+
+                <form sec:authorize="isAuthenticated()"
+                      th:action="@{/wishlist/toggle}" method="post"
+                      style="margin-top: 0.5rem;">
+                    <input type="hidden" name="itemId" th:value="${item.id}">
+                    <input type="hidden" name="redirectUrl" th:value="@{'/item/' + ${item.id}}">
+                    <button type="submit" class="btn-wishlist"
+                            th:text="${wishlisted} ? '♥ Remove from Wishlist' : '♡ Add to Wishlist'">
+                    </button>
+                </form>
 
                 <a th:href="@{'/category/' + ${item.category.name.toLowerCase()}}"
                    class="item-detail-back">← Back to [[${item.category.name}]]</a>
