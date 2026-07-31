@@ -49,42 +49,77 @@
                 <h1>Subscription</h1>
             </div>
 
-            <div th:if="${#lists.isEmpty(subscriptions)}" class="cart-empty">
-                <p>No active subscription found.</p>
-            </div>
-
-            <div th:unless="${#lists.isEmpty(subscriptions)}">
-                <div class="subscription-card" th:each="sub : ${subscriptions}">
-                    <div class="info-grid">
-                        <div class="info-row">
-                            <span class="info-label">Plan</span>
-                            <span class="info-value" th:text="${sub.type.name()}">DEFAULT</span>
-                        </div>
-                        <div class="info-row">
-                            <span class="info-label">Status</span>
-                            <span class="status-badge"
-                                  th:classappend="${sub.status.name() == 'ACTIVE'} ? 'status-delivered' : 'status-cancelled'"
-                                  th:text="${sub.status.name()}">ACTIVE</span>
-                        </div>
-                        <div class="info-row">
-                            <span class="info-label">Price</span>
-                            <span class="info-value" th:text="'€' + ${#numbers.formatDecimal(sub.price, 1, 'NONE', 2, 'POINT')}">€0.00</span>
-                        </div>
-                        <div class="info-row">
-                            <span class="info-label">Started</span>
-                            <span class="info-value"
-                                  th:text="${#temporals.format(sub.createdOn, 'dd MMM yyyy')}">—</span>
-                        </div>
-                        <div class="info-row">
-                            <span class="info-label">Renews</span>
-                            <span class="info-value"
-                                  th:text="${#temporals.format(sub.completedOn, 'dd MMM yyyy')}">—</span>
-                        </div>
+            <!-- Active subscription summary -->
+            <div class="subscription-card">
+                <div class="info-grid">
+                    <div class="info-row">
+                        <span class="info-label">Current Plan</span>
+                        <span class="info-value" th:text="${active.type.name()}">DEFAULT</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Status</span>
+                        <span class="status-badge"
+                              th:classappend="${active.status.name() == 'ACTIVE'} ? 'status-delivered' : 'status-cancelled'"
+                              th:text="${active.status.name()}">ACTIVE</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Valid until</span>
+                        <span class="info-value"
+                              th:text="${#temporals.format(active.completedOn, 'dd MMM yyyy')}">—</span>
                     </div>
                 </div>
             </div>
 
-            <a th:href="@{/users/profile}" class="btn-continue" style="margin-top: 24px; display:inline-block;">
+            <!-- Tier upgrade cards -->
+            <h2 style="margin-top: 2rem;">Available Plans</h2>
+            <div class="subscription-tiers">
+
+                <!-- DEFAULT -->
+                <div class="tier-card" th:classappend="${active.type.name() == 'DEFAULT'} ? 'tier-current'">
+                    <h3>Default</h3>
+                    <p class="tier-price">Free</p>
+                    <ul class="tier-benefits">
+                        <li>No discount</li>
+                        <li>Standard shipping rates</li>
+                    </ul>
+                    <span th:if="${active.type.name() == 'DEFAULT'}" class="tier-badge">Current plan</span>
+                </div>
+
+                <!-- STANDARD -->
+                <div class="tier-card" th:classappend="${active.type.name() == 'STANDARD'} ? 'tier-current'">
+                    <h3>Standard</h3>
+                    <p class="tier-price">€4.99 / month</p>
+                    <ul class="tier-benefits">
+                        <li>5% discount on all orders</li>
+                        <li>Free shipping on orders over €50</li>
+                    </ul>
+                    <span th:if="${active.type.name() == 'STANDARD'}" class="tier-badge">Current plan</span>
+                    <form th:if="${active.type.name() == 'DEFAULT'}"
+                          th:action="@{/users/subscription/upgrade}" method="post">
+                        <input type="hidden" name="newType" value="STANDARD">
+                        <button type="submit" class="btn-checkout">Upgrade to Standard</button>
+                    </form>
+                </div>
+
+                <!-- PREMIUM -->
+                <div class="tier-card tier-premium" th:classappend="${active.type.name() == 'PREMIUM'} ? 'tier-current'">
+                    <h3>Premium</h3>
+                    <p class="tier-price">€9.99 / month</p>
+                    <ul class="tier-benefits">
+                        <li>10% discount on all orders</li>
+                        <li>Always free shipping</li>
+                    </ul>
+                    <span th:if="${active.type.name() == 'PREMIUM'}" class="tier-badge">Current plan</span>
+                    <form th:if="${active.type.name() != 'PREMIUM'}"
+                          th:action="@{/users/subscription/upgrade}" method="post">
+                        <input type="hidden" name="newType" value="PREMIUM">
+                        <button type="submit" class="btn-checkout">Upgrade to Premium</button>
+                    </form>
+                </div>
+
+            </div>
+
+            <a th:href="@{/users/profile}" class="btn-continue" style="margin-top: 2rem; display:inline-block;">
                 Back to Profile
             </a>
 

@@ -2,13 +2,17 @@ package com.SVO.TechTome.web;
 
 import com.SVO.TechTome.models.Subscription;
 import com.SVO.TechTome.models.User;
+import com.SVO.TechTome.models.enums.SubscriptionType;
 import com.SVO.TechTome.security.AuthMetaData;
+import com.SVO.TechTome.services.SubscriptionService;
 import com.SVO.TechTome.services.UserService;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.util.List;
@@ -18,9 +22,11 @@ import java.util.List;
 public class UserController {
 
     private final UserService userService;
+    private final SubscriptionService subscriptionService;
 
-    public UserController(UserService userService) {
+    public UserController(UserService userService, SubscriptionService subscriptionService) {
         this.userService = userService;
+        this.subscriptionService = subscriptionService;
     }
 
     @GetMapping
@@ -65,11 +71,20 @@ public class UserController {
     @GetMapping("/subscription")
     public ModelAndView subscription(@AuthenticationPrincipal AuthMetaData authMetaData) {
         User user = userService.getById(authMetaData.getId());
-        List<Subscription> subscriptions = user.getSubscriptions();
+        Subscription active = subscriptionService.getActiveSubscription(user);
 
         ModelAndView mav = new ModelAndView("subscription");
         mav.addObject("user", user);
-        mav.addObject("subscriptions", subscriptions);
+        mav.addObject("active", active);
+        mav.addObject("tiers", SubscriptionType.values());
         return mav;
+    }
+
+    @PostMapping("/subscription/upgrade")
+    public String upgrade(@AuthenticationPrincipal AuthMetaData authMetaData,
+                          @RequestParam SubscriptionType newType) {
+        User user = userService.getById(authMetaData.getId());
+        subscriptionService.upgrade(user, newType);
+        return "redirect:/users/subscription";
     }
 }
