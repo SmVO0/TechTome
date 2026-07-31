@@ -30,4 +30,26 @@ build/
 !**/src/test/**/build/
 
 ### VS Code ###
-.vscode/aa
+.vscode/
+
+### macOS ###
+.DS_Store
+.AppleDouble
+.LSOverride
+
+### Claude Code ###
+CLAUDE.md
+
+### Environment / secrets ###
+.env
+.env.*
+!.env.example
+application-local.properties
+application-secret.properties
+
+### Docker ###
+docker-compose.override.yml
+
+### Logs ###
+*.log
+logs/
