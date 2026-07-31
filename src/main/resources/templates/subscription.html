@@ -12,12 +12,12 @@
 <header>
     <div class="navbar">
         <a th:href="@{/}"><img src="/images/header/Logo.png" alt="TechTome" class="logo"></a>
-        <div class="search-box">
-            <input type="text" class="search-bar" placeholder="Search TechTome...">
-            <button type="button" class="search-btn">
+        <form class="search-box" th:action="@{/search}" method="get">
+            <input type="text" name="q" class="search-bar" placeholder="Search TechTome...">
+            <button type="submit" class="search-btn">
                 <img src="/images/header/search.png" alt="Search" class="search-icon">
             </button>
-        </div>
+        </form>
         <div class="icons">
             <a th:href="@{/shopping}" aria-label="Shopping cart">
                 <img src="/images/header/shopping_cart.png" alt="Cart" class="nav-icon">

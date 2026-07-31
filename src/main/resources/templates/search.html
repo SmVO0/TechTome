@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TechTome</title>
+    <title>Search – TechTome</title>
     <link rel="stylesheet" href="/css/common.css">
     <link rel="stylesheet" href="/css/home.css">
     <link rel="stylesheet" href="/css/category.css">
@@ -14,7 +14,8 @@
     <div class="navbar">
         <a th:href="@{/}"><img src="/images/header/Logo.png" alt="TechTome" class="logo"></a>
         <form class="search-box" th:action="@{/search}" method="get">
-            <input type="text" name="q" class="search-bar" placeholder="Search TechTome...">
+            <input type="text" name="q" class="search-bar" placeholder="Search TechTome..."
+                   th:value="${query}">
             <button type="submit" class="search-btn">
                 <img src="/images/header/search.png" alt="Search" class="search-icon">
             </button>
@@ -44,10 +45,26 @@
     </aside>
 
     <main class="main-content">
-        <div class="items-container">
-            <div class="item" th:each="item : ${items}">
+
+        <div class="search-header">
+            <h2 th:if="${query != null and !#strings.isEmpty(query)}">
+                Results for "<span th:text="${query}"></span>"
+                <span class="search-count" th:text="'(' + ${results.totalElements} + ')'"></span>
+            </h2>
+            <h2 th:unless="${query != null and !#strings.isEmpty(query)}">All Products</h2>
+        </div>
+
+        <!-- Empty state -->
+        <div th:if="${results.totalElements == 0}" class="search-empty">
+            <p>No products found for "<span th:text="${query}"></span>".</p>
+            <a th:href="@{/home}" class="btn-continue">Browse all products</a>
+        </div>
+
+        <!-- Results grid -->
+        <div th:unless="${results.totalElements == 0}" class="items-container">
+            <div class="item" th:each="item : ${results.content}">
                 <a th:href="@{'/item/' + ${item.id}}">
-                    <img th:src="${item.image}" alt="Item" class="item-image">
+                    <img th:src="${item.image}" th:alt="${item.name}" class="item-image">
                     <p th:text="${item.name}">Item name</p>
                 </a>
                 <hr>
@@ -64,6 +81,24 @@
                 </div>
             </div>
         </div>
+
+        <!-- Pagination -->
+        <nav th:if="${results.totalPages > 1}" class="pagination" aria-label="Search results pages">
+            <a th:if="${currentPage > 0}"
+               th:href="@{/search(q=${query}, page=${currentPage - 1})}"
+               class="page-link">&laquo; Previous</a>
+
+            <span th:each="i : ${#numbers.sequence(0, results.totalPages - 1)}">
+                <a th:href="@{/search(q=${query}, page=${i})}"
+                   th:text="${i + 1}"
+                   th:classappend="${i == currentPage} ? 'page-link page-active' : 'page-link'"></a>
+            </span>
+
+            <a th:if="${currentPage < results.totalPages - 1}"
+               th:href="@{/search(q=${query}, page=${currentPage + 1})}"
+               class="page-link">Next &raquo;</a>
+        </nav>
+
     </main>
 
 </div>
