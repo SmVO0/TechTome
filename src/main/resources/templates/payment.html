@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkout – TechTome</title>
+    <link rel="stylesheet" href="/css/common.css">
+    <link rel="stylesheet" href="/css/home.css">
+</head>
+<body>
+
+<header>
+    <div class="navbar">
+        <a th:href="@{/}"><img src="/images/header/Logo.png" alt="TechTome" class="logo"></a>
+        <form class="search-box" th:action="@{/search}" method="get">
+            <input type="text" name="q" class="search-bar" placeholder="Search TechTome...">
+            <button type="submit" class="search-btn">
+                <img src="/images/header/search.png" alt="Search" class="search-icon">
+            </button>
+        </form>
+        <div class="icons">
+            <a th:href="@{/shopping}" aria-label="Shopping cart">
+                <img src="/images/header/shopping_cart.png" alt="Cart" class="nav-icon">
+            </a>
+            <a th:href="@{/users/profile}" aria-label="Profile">
+                <img src="/images/header/Profile.png" alt="Profile" class="nav-icon">
+            </a>
+        </div>
+    </div>
+</header>
+
+<div class="main-container">
+
+    <aside class="sidebar" aria-label="Category navigation">
+        <nav class="menu">
+            <a th:href="@{/home}">Home</a>
+            <a th:href="@{/category/computers}">Computers</a>
+            <a th:href="@{/category/laptops}">Laptops</a>
+            <a th:href="@{/category/keyboards}">Keyboards</a>
+            <a th:href="@{/category/mice}">Mice</a>
+            <a th:href="@{/category/monitors}">Monitors</a>
+        </nav>
+    </aside>
+
+    <main class="main-content">
+        <div class="cart-layout">
+
+            <!-- Delivery & Payment form -->
+            <section class="cart-items">
+                <h2>Delivery Details</h2>
+                <p class="payment-note">Payment is processed automatically on order confirmation.</p>
+
+                <form th:action="@{/checkout/pay}" method="post" class="checkout-form">
+
+                    <div class="form-group">
+                        <label for="recipientName">Full Name</label>
+                        <input type="text" id="recipientName" name="recipientName"
+                               th:value="${user.firstName + ' ' + user.lastName}"
+                               placeholder="Full name" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="recipientPhone">Phone Number</label>
+                        <input type="tel" id="recipientPhone" name="recipientPhone"
+                               placeholder="+359 888 000 000" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="deliveryCity">City</label>
+                        <input type="text" id="deliveryCity" name="deliveryCity"
+                               placeholder="Sofia" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="deliveryAddress">Street Address</label>
+                        <input type="text" id="deliveryAddress" name="deliveryAddress"
+                               placeholder="Street, number, floor, apartment" required>
+                    </div>
+
+                    <div class="payment-placeholder">
+                        <h3>Payment</h3>
+                        <p>💳 Card payment will be implemented in a future release.</p>
+                        <p>Your order will be confirmed immediately.</p>
+                    </div>
+
+                    <button type="submit" class="btn-checkout">Place Order</button>
+                </form>
+            </section>
+
+            <!-- Order summary -->
+            <aside class="cart-summary" aria-label="Order summary">
+                <h3>Order Summary</h3>
+
+                <div th:each="ci : ${items}" class="summary-row">
+                    <span th:text="${ci.storeItem.name} + ' ×' + ${ci.quantity}"></span>
+                    <span th:text="'€' + ${#numbers.formatDecimal(ci.unitPrice * ci.quantity, 1, 'NONE', 2, 'POINT')}"></span>
+                </div>
+
+                <hr class="summary-divider">
+
+                <div class="summary-row summary-total">
+                    <span>Subtotal</span>
+                    <span th:text="'€' + ${#numbers.formatDecimal(cartTotal, 1, 'NONE', 2, 'POINT')}"></span>
+                </div>
+
+                <p class="payment-note" style="margin-top:0.5rem;">
+                    Shipping and discounts applied at order confirmation.
+                </p>
+
+                <a th:href="@{/shopping}" class="btn-continue">← Back to Cart</a>
+            </aside>
+
+        </div>
+    </main>
+
+</div>
+
+<footer th:insert="fragments/footer :: footer"></footer>
+
+</body>
+</html>

@@ -1,8 +1,8 @@
 package com.SVO.TechTome.constants;
 
-public final class MvcConstants {
+public final class Constants {
 
-    private MvcConstants() {}
+    private Constants() {}
 
     // Views
     public static final String ERROR_VIEW = "error";

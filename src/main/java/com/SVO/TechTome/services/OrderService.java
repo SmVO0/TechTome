@@ -50,7 +50,8 @@ public class OrderService {
     }
 
     @Transactional
-    public Order checkout(UUID userId) {
+    public Order checkout(UUID userId, String recipientName, String recipientPhone,
+                          String deliveryAddress, String deliveryCity) {
         User user = userService.getById(userId);
         ShoppingCart cart = user.getShoppingCart();
 
@@ -71,7 +72,7 @@ public class OrderService {
 
         BigDecimal deliveryCost = subscriptionService.isShippingFree(user, discountedTotal)
                 ? BigDecimal.ZERO
-                : deliveryService.calculateDeliveryCost("");
+                : deliveryService.calculateDeliveryCost(deliveryCity);
 
         Order order = Order.builder()
                 .buyer(user)
@@ -80,6 +81,10 @@ public class OrderService {
                 .totalPrice(discountedTotal)
                 .deliveryCost(deliveryCost)
                 .paymentStatus(PaymentStatus.MOCK_PAID)
+                .recipientName(recipientName)
+                .recipientPhone(recipientPhone)
+                .deliveryAddress(deliveryAddress)
+                .deliveryCity(deliveryCity)
                 .build();
         Order saved = orderRepository.save(order);
 

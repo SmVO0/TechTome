@@ -111,9 +111,7 @@
                     <span>Total</span>
                     <span class="cart-total-value" th:text="'€' + ${#numbers.formatDecimal(totalPrice, 1, 'NONE', 2, 'POINT')}"></span>
                 </div>
-                <form th:action="@{/checkout}" method="post">
-                    <button type="submit" class="btn-checkout">Proceed to Checkout</button>
-                </form>
+                <a th:href="@{/checkout/payment}" class="btn-checkout">Proceed to Checkout</a>
                 <a th:href="@{/home}" class="btn-continue">Continue Shopping</a>
             </aside>
 
