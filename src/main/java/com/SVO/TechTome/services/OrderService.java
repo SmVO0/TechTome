@@ -6,6 +6,7 @@ import com.SVO.TechTome.models.ShoppingCart;
 import com.SVO.TechTome.models.StoreItem;
 import com.SVO.TechTome.models.User;
 import com.SVO.TechTome.models.enums.OrderStatus;
+import com.SVO.TechTome.models.enums.PaymentStatus;
 import com.SVO.TechTome.repositories.OrderRepository;
 import com.SVO.TechTome.repositories.StoreItemRepository;
 import com.SVO.TechTome.web.exception.DomainException;
@@ -13,6 +14,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
@@ -29,15 +32,21 @@ public class OrderService {
     private final UserService userService;
     private final ShoppingCartService shoppingCartService;
     private final StoreItemRepository storeItemRepository;
+    private final SubscriptionService subscriptionService;
+    private final DeliveryService deliveryService;
 
     public OrderService(OrderRepository orderRepository,
                         UserService userService,
                         ShoppingCartService shoppingCartService,
-                        StoreItemRepository storeItemRepository) {
+                        StoreItemRepository storeItemRepository,
+                        SubscriptionService subscriptionService,
+                        DeliveryService deliveryService) {
         this.orderRepository = orderRepository;
         this.userService = userService;
         this.shoppingCartService = shoppingCartService;
         this.storeItemRepository = storeItemRepository;
+        this.subscriptionService = subscriptionService;
+        this.deliveryService = deliveryService;
     }
 
     @Transactional
@@ -56,11 +65,21 @@ public class OrderService {
             }
         });
 
+        BigDecimal rawTotal = cart.getTotalPrice();
+        BigDecimal discountMultiplier = subscriptionService.getDiscountMultiplier(user);
+        BigDecimal discountedTotal = rawTotal.multiply(discountMultiplier).setScale(2, RoundingMode.HALF_UP);
+
+        BigDecimal deliveryCost = subscriptionService.isShippingFree(user, discountedTotal)
+                ? BigDecimal.ZERO
+                : deliveryService.calculateDeliveryCost("");
+
         Order order = Order.builder()
                 .buyer(user)
                 .createdOn(LocalDateTime.now())
                 .status(OrderStatus.PENDING)
-                .totalPrice(cart.getTotalPrice())
+                .totalPrice(discountedTotal)
+                .deliveryCost(deliveryCost)
+                .paymentStatus(PaymentStatus.MOCK_PAID)
                 .build();
         Order saved = orderRepository.save(order);
 
@@ -81,11 +100,16 @@ public class OrderService {
                 .toList();
 
         saved.setItems(orderItems);
+
+        String trackingNumber = deliveryService.createShipment(saved);
+        saved.setTrackingNumber(trackingNumber);
+
         orderRepository.save(saved);
 
         shoppingCartService.clearCart(cart.getId());
 
-        log.info("Order [{}] created for user [{}]", saved.getId(), user.getEmail());
+        log.info("Order [{}] created for user [{}] — total: {}, delivery: {}, tracking: {}",
+                saved.getId(), user.getEmail(), discountedTotal, deliveryCost, trackingNumber);
         return saved;
     }
 
