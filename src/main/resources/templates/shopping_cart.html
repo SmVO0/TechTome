@@ -67,7 +67,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr th:each="cartItem : ${items}">
+                            <tr th:each="cartItem : ${items}" th:data-item-id="${cartItem.storeItem.id}">
                                 <td class="cart-item-img-cell">
                                     <img th:src="${cartItem.storeItem.image}"
                                          th:alt="${cartItem.storeItem.name}"
@@ -88,7 +88,7 @@
                                         </form>
                                     </div>
                                 </td>
-                                <td th:text="'€' + ${#numbers.formatDecimal(cartItem.unitPrice * cartItem.quantity, 1, 'NONE', 2, 'POINT')}"></td>
+                                <td class="cart-item-subtotal" th:text="'€' + ${#numbers.formatDecimal(cartItem.unitPrice * cartItem.quantity, 1, 'NONE', 2, 'POINT')}"></td>
                             </tr>
                         </tbody>
                     </table>
@@ -109,7 +109,7 @@
                 <hr class="summary-divider">
                 <div class="summary-row summary-total">
                     <span>Total</span>
-                    <span th:text="'€' + ${#numbers.formatDecimal(totalPrice, 1, 'NONE', 2, 'POINT')}"></span>
+                    <span class="cart-total-value" th:text="'€' + ${#numbers.formatDecimal(totalPrice, 1, 'NONE', 2, 'POINT')}"></span>
                 </div>
                 <form th:action="@{/checkout}" method="post">
                     <button type="submit" class="btn-checkout">Proceed to Checkout</button>
@@ -124,5 +124,6 @@
 
 <footer th:insert="fragments/footer :: footer"></footer>
 
+<script src="/js/cart-qty.js"></script>
 </body>
 </html>

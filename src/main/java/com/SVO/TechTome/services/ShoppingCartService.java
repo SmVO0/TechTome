@@ -92,6 +92,12 @@ public class ShoppingCartService {
         shoppingCartRepository.save(cart);
     }
 
+    public BigDecimal getCartTotal(UUID cartId) {
+        return shoppingCartRepository.findById(cartId)
+                .map(ShoppingCart::getTotalPrice)
+                .orElse(BigDecimal.ZERO);
+    }
+
     @Transactional
     public void clearCart(UUID cartId) {
         ShoppingCart cart = shoppingCartRepository.findById(cartId)

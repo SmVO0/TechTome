@@ -36,14 +36,14 @@
     document.addEventListener('submit', function (e) {
         let form = e.target;
 
-        // Only intercept our add-to-cart forms
-        if (!form.action?.includes('/shopping/add')) {
+        // Only intercept add-to-cart forms; skip the cart page quantity controls (handled by cart-qty.js)
+        if (!form.action?.includes('/shopping/add') || form.closest('.cart-qty-controls')) {
             return;
         }
 
         e.preventDefault();
 
-        let itemName = form.dataset('data-item-name') || 'Item';
+        let itemName = form.dataset.itemName || 'Item';
 
         fetch(form.action, {
             method: 'POST',
