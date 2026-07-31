@@ -60,6 +60,26 @@
                                             : 'status-pending')"
                               th:text="${order.status.name()}">PENDING</span>
                     </p>
+                    <p th:if="${order.paymentStatus != null}">
+                        <strong>Payment:</strong>
+                        <span th:text="${order.paymentStatus.name()}">MOCK_PAID</span>
+                    </p>
+                </div>
+
+                <!-- Delivery info -->
+                <div th:if="${order.recipientName != null}" class="order-meta" style="margin-top:1rem;">
+                    <h3>Delivery Details</h3>
+                    <p><strong>Recipient:</strong> <span th:text="${order.recipientName}"></span></p>
+                    <p><strong>Phone:</strong> <span th:text="${order.recipientPhone}"></span></p>
+                    <p><strong>Address:</strong>
+                        <span th:text="${order.deliveryAddress + ', ' + order.deliveryCity}"></span></p>
+                    <p th:if="${order.trackingNumber != null}">
+                        <strong>Tracking Number:</strong>
+                        <span class="tracking-number" th:text="${order.trackingNumber}"></span>
+                    </p>
+                    <p th:unless="${order.trackingNumber != null}">
+                        <strong>Tracking:</strong> <span>Pending</span>
+                    </p>
                 </div>
 
                 <table class="cart-table">
@@ -96,12 +116,17 @@
                 </div>
                 <div class="summary-row">
                     <span>Shipping</span>
-                    <span class="summary-free">FREE</span>
+                    <span th:if="${order.deliveryCost == null or order.deliveryCost == 0}"
+                          class="summary-free">FREE</span>
+                    <span th:unless="${order.deliveryCost == null or order.deliveryCost == 0}"
+                          th:text="'€' + ${#numbers.formatDecimal(order.deliveryCost, 1, 'NONE', 2, 'POINT')}"></span>
                 </div>
                 <hr class="summary-divider">
                 <div class="summary-row summary-total">
                     <span>Total</span>
-                    <span th:text="'€' + ${#numbers.formatDecimal(order.totalPrice, 1, 'NONE', 2, 'POINT')}"></span>
+                    <span th:text="'€' + ${#numbers.formatDecimal(
+                        order.totalPrice + (order.deliveryCost != null ? order.deliveryCost : 0),
+                        1, 'NONE', 2, 'POINT')}"></span>
                 </div>
                 <a th:href="@{/orders}" class="btn-continue">View All Orders</a>
                 <a th:href="@{/home}" class="btn-continue">Continue Shopping</a>
