@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin – Products – TechTome</title>
+    <link rel="stylesheet" href="/css/common.css">
+    <link rel="stylesheet" href="/css/home.css">
+    <link rel="stylesheet" href="/css/admin.css">
+</head>
+<body>
+
+<header>
+    <div class="navbar">
+        <a th:href="@{/home}"><img src="/images/header/Logo.png" alt="TechTome" class="logo"></a>
+        <form class="search-box" th:action="@{/search}" method="get">
+            <input type="text" name="q" class="search-bar" placeholder="Search TechTome...">
+            <button type="submit" class="search-btn">
+                <img src="/images/header/search.png" alt="Search" class="search-icon">
+            </button>
+        </form>
+        <div class="icons">
+            <a th:href="@{/shopping}" aria-label="Shopping cart">
+                <img src="/images/header/shopping_cart.png" alt="Cart" class="nav-icon">
+            </a>
+            <a th:href="@{/users/profile}" aria-label="Profile">
+                <img src="/images/header/Profile.png" alt="Profile" class="nav-icon">
+            </a>
+        </div>
+    </div>
+</header>
+
+<div th:insert="~{fragments/adminNav :: adminNav}"></div>
+
+<div class="main-container">
+    <main class="main-content" style="grid-column: 1 / -1;">
+        <div class="admin-panel">
+
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:10px;">
+                <h2 class="admin-title" style="margin-bottom:0;">Products</h2>
+                <a th:href="@{/admin/products/new}" class="admin-btn">+ Add Product</a>
+            </div>
+
+            <p class="admin-result-count"
+               th:text="${products.size()} + ' product' + (${products.size()} != 1 ? 's' : '')"></p>
+
+            <div th:if="${products.isEmpty()}" class="cart-empty">
+                <p>No products found.</p>
+            </div>
+
+            <div th:unless="${products.isEmpty()}" style="overflow-x:auto;">
+                <table class="admin-table">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Category</th>
+                            <th>Price</th>
+                            <th>Stock</th>
+                            <th>Featured</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="p : ${products}">
+                            <td th:text="${p.name}"></td>
+                            <td th:text="${p.category.name}"></td>
+                            <td th:text="'€' + ${#numbers.formatDecimal(p.price, 1, 'NONE', 2, 'POINT')}"></td>
+                            <td th:text="${p.stock}"></td>
+                            <td>
+                                <span th:if="${p.featured}" style="color:#15803d;font-weight:700;">Yes</span>
+                                <span th:unless="${p.featured}" style="color:#94a3b8;">No</span>
+                            </td>
+                            <td style="white-space:nowrap;">
+                                <a th:href="@{/admin/products/{id}/edit(id=${p.id})}"
+                                   class="admin-btn-sm" style="margin-right:6px;">Edit</a>
+                                <form th:action="@{/admin/products/{id}/delete(id=${p.id})}"
+                                      method="post" style="display:inline;"
+                                      onsubmit="return confirm('Delete this product?');">
+                                    <button type="submit" class="admin-btn-danger">Delete</button>
+                                </form>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+    </main>
+</div>
+
+<footer th:insert="~{fragments/footer :: footer}"></footer>
+
+</body>
+</html>

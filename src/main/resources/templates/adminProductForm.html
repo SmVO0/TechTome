@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${editMode} ? 'Admin – Edit Product – TechTome' : 'Admin – New Product – TechTome'">Admin – Product – TechTome</title>
+    <link rel="stylesheet" href="/css/common.css">
+    <link rel="stylesheet" href="/css/home.css">
+    <link rel="stylesheet" href="/css/admin.css">
+</head>
+<body>
+
+<header>
+    <div class="navbar">
+        <a th:href="@{/home}"><img src="/images/header/Logo.png" alt="TechTome" class="logo"></a>
+        <form class="search-box" th:action="@{/search}" method="get">
+            <input type="text" name="q" class="search-bar" placeholder="Search TechTome...">
+            <button type="submit" class="search-btn">
+                <img src="/images/header/search.png" alt="Search" class="search-icon">
+            </button>
+        </form>
+        <div class="icons">
+            <a th:href="@{/shopping}" aria-label="Shopping cart">
+                <img src="/images/header/shopping_cart.png" alt="Cart" class="nav-icon">
+            </a>
+            <a th:href="@{/users/profile}" aria-label="Profile">
+                <img src="/images/header/Profile.png" alt="Profile" class="nav-icon">
+            </a>
+        </div>
+    </div>
+</header>
+
+<div th:insert="~{fragments/adminNav :: adminNav}"></div>
+
+<div class="main-container">
+    <main class="main-content" style="grid-column: 1 / -1;">
+        <div class="admin-panel">
+
+            <a th:href="@{/admin/products}" class="admin-back">← Back to Products</a>
+
+            <h2 class="admin-title" th:text="${editMode} ? 'Edit Product' : 'New Product'"></h2>
+
+            <form th:action="${editMode} ? @{/admin/products/{id}/edit(id=${itemId})} : @{/admin/products/new}"
+                  method="post" class="admin-form">
+
+                <div class="form-group">
+                    <label for="name">Name</label>
+                    <input type="text" id="name" name="name" th:value="${form.name}" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="shortDescription">Short Description <span style="font-weight:400;color:#94a3b8;">(used on cards and SEO)</span></label>
+                    <input type="text" id="shortDescription" name="shortDescription"
+                           th:value="${form.shortDescription}"
+                           placeholder="One-line summary…">
+                </div>
+
+                <div class="form-group">
+                    <label for="description">Full Description</label>
+                    <textarea id="description" name="description" rows="4" required
+                              th:text="${form.description}"></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="price">Price (€)</label>
+                    <input type="number" id="price" name="price" step="0.01" min="0"
+                           th:value="${form.price}" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="stock">Stock</label>
+                    <input type="number" id="stock" name="stock" min="0"
+                           th:value="${form.stock}" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="image">Image URL</label>
+                    <input type="text" id="image" name="image" th:value="${form.image}" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="categoryId">Category</label>
+                    <select id="categoryId" name="categoryId" required>
+                        <option value="">— Select category —</option>
+                        <option th:each="cat : ${categories}"
+                                th:value="${cat.id}"
+                                th:text="${cat.name}"
+                                th:selected="${cat.id == form.categoryId}"></option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label class="admin-checkbox-row">
+                        <input type="checkbox" name="featured" th:checked="${form.featured}">
+                        Featured (shown in homepage featured section)
+                    </label>
+                </div>
+
+                <div class="admin-form-actions">
+                    <button type="submit" class="admin-btn"
+                            th:text="${editMode} ? 'Save Changes' : 'Create Product'"></button>
+                    <a th:href="@{/admin/products}" class="admin-btn-secondary">Cancel</a>
+                </div>
+
+            </form>
+
+        </div>
+    </main>
+</div>
+
+<footer th:insert="~{fragments/footer :: footer}"></footer>
+
+</body>
+</html>

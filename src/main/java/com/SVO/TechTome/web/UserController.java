@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
-import java.util.List;
 
 @Controller
 @RequestMapping("/users")
@@ -31,12 +30,8 @@ public class UserController {
 
     @GetMapping
     @PreAuthorize("hasRole('ADMIN')")
-    public ModelAndView users() {
-        List<User> allUsers = userService.getAllUsers();
-
-        ModelAndView mav = new ModelAndView("adminUsers");
-        mav.addObject("users", allUsers);
-        return mav;
+    public String users() {
+        return "redirect:/admin/users";
     }
 
     @GetMapping("/edit")
@@ -52,6 +47,7 @@ public class UserController {
 
     @GetMapping("/profile")
     public ModelAndView userProfile(@AuthenticationPrincipal AuthMetaData authMetaData) {
+        if (authMetaData == null) return new ModelAndView("redirect:/login");
         User user = userService.getById(authMetaData.getId());
 
         ModelAndView mav = new ModelAndView("profile");

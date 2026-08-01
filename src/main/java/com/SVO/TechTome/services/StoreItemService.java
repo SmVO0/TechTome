@@ -31,4 +31,15 @@ public class StoreItemService {
                 .orElseThrow(() -> new DomainException(STORE_ITEM_NOT_FOUND));
     }
 
+    public List<StoreItem> getAllItems() {
+        return storeItemRepository.findAll();
+    }
+
+    public StoreItem save(StoreItem item) {
+        return storeItemRepository.save(item);
+    }
+
+    public void deleteById(UUID id) {
+        storeItemRepository.deleteById(id);
+    }
 }

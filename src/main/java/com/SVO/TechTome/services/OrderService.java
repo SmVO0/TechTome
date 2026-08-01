@@ -11,6 +11,7 @@ import com.SVO.TechTome.repositories.OrderRepository;
 import com.SVO.TechTome.repositories.StoreItemRepository;
 import com.SVO.TechTome.web.exception.DomainException;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -133,5 +134,26 @@ public class OrderService {
     public Order getOrderById(UUID orderId) {
         return orderRepository.findById(orderId)
                 .orElseThrow(() -> new DomainException(ORDER_NOT_FOUND.formatted(orderId)));
+    }
+
+    public List<Order> getAllOrders() {
+        return orderRepository.findAllByOrderByCreatedOnDesc();
+    }
+
+    public List<Order> getRecentOrdersForUser(UUID userId, int limit) {
+        User user = userService.getById(userId);
+        return orderRepository.findByBuyerOrderByCreatedOnDesc(user, PageRequest.of(0, limit)).getContent();
+    }
+
+    public long countOrdersForUser(UUID userId) {
+        User user = userService.getById(userId);
+        return orderRepository.countByBuyer(user);
+    }
+
+    public void updateStatus(UUID orderId, OrderStatus status) {
+        Order order = getOrderById(orderId);
+        order.setStatus(status);
+        orderRepository.save(order);
+        log.info("Order [{}] status updated to [{}].", orderId, status);
     }
 }

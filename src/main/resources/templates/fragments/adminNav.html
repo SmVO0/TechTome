@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<body>
+<nav th:fragment="adminNav" class="admin-nav" aria-label="Admin navigation">
+    <a th:href="@{/admin/users}"
+       th:classappend="${activeSection == 'users'} ? ' active'">Users</a>
+    <a th:href="@{/admin/products}"
+       th:classappend="${activeSection == 'products'} ? ' active'">Products</a>
+    <a th:href="@{/admin/orders}"
+       th:classappend="${activeSection == 'orders'} ? ' active'">Orders</a>
+</nav>
+</body>
+</html>

@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin – User Detail – TechTome</title>
+    <link rel="stylesheet" href="/css/common.css">
+    <link rel="stylesheet" href="/css/home.css">
+    <link rel="stylesheet" href="/css/admin.css">
+</head>
+<body>
+
+<header>
+    <div class="navbar">
+        <a th:href="@{/home}"><img src="/images/header/Logo.png" alt="TechTome" class="logo"></a>
+        <form class="search-box" th:action="@{/search}" method="get">
+            <input type="text" name="q" class="search-bar" placeholder="Search TechTome...">
+            <button type="submit" class="search-btn">
+                <img src="/images/header/search.png" alt="Search" class="search-icon">
+            </button>
+        </form>
+        <div class="icons">
+            <a th:href="@{/shopping}" aria-label="Shopping cart">
+                <img src="/images/header/shopping_cart.png" alt="Cart" class="nav-icon">
+            </a>
+            <a th:href="@{/users/profile}" aria-label="Profile">
+                <img src="/images/header/Profile.png" alt="Profile" class="nav-icon">
+            </a>
+        </div>
+    </div>
+</header>
+
+<div th:insert="~{fragments/adminNav :: adminNav}"></div>
+
+<div class="main-container">
+    <main class="main-content" style="grid-column: 1 / -1;">
+        <div class="admin-panel">
+
+            <a th:href="@{/admin/users}" class="admin-back">← Back to Users</a>
+
+            <h2 class="admin-title" th:text="${user.username}"></h2>
+
+            <div class="admin-detail-grid">
+
+                <!-- Account info -->
+                <div class="admin-detail-card">
+                    <div class="admin-detail-label">Account</div>
+                    <div class="admin-detail-row">
+                        <span class="admin-detail-key">ID</span>
+                        <code style="font-size:0.78rem" th:text="${user.id}"></code>
+                    </div>
+                    <div class="admin-detail-row">
+                        <span class="admin-detail-key">Username</span>
+                        <span th:text="${user.username}"></span>
+                    </div>
+                    <div class="admin-detail-row">
+                        <span class="admin-detail-key">Email</span>
+                        <span th:text="${user.email}"></span>
+                    </div>
+                    <div class="admin-detail-row">
+                        <span class="admin-detail-key">Name</span>
+                        <span th:text="${(user.firstName ?: '') + ' ' + (user.lastName ?: '')}"></span>
+                    </div>
+                    <div class="admin-detail-row">
+                        <span class="admin-detail-key">Role</span>
+                        <span class="role-badge"
+                              th:classappend="'role-' + ${user.role.name().toLowerCase()}"
+                              th:text="${user.role.name()}"></span>
+                    </div>
+                </div>
+
+                <!-- Subscription info -->
+                <div class="admin-detail-card">
+                    <div class="admin-detail-label">Active Subscription</div>
+                    <div class="admin-detail-row">
+                        <span class="admin-detail-key">Tier</span>
+                        <span class="sub-badge"
+                              th:classappend="'sub-' + ${subscription.type.name().toLowerCase()}"
+                              th:text="${subscription.type.name()}"></span>
+                    </div>
+                    <div class="admin-detail-row">
+                        <span class="admin-detail-key">Status</span>
+                        <span th:text="${subscription.status.name()}"></span>
+                    </div>
+                    <div class="admin-detail-row">
+                        <span class="admin-detail-key">Started</span>
+                        <span th:text="${#temporals.format(subscription.createdOn, 'yyyy-MM-dd')}"></span>
+                    </div>
+                    <div class="admin-detail-row">
+                        <span class="admin-detail-key">Expires</span>
+                        <span th:text="${#temporals.format(subscription.completedOn, 'yyyy-MM-dd')}"></span>
+                    </div>
+                    <div class="admin-detail-row">
+                        <span class="admin-detail-key">Total orders</span>
+                        <span th:text="${orderCount}"></span>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Recent orders -->
+            <h3 style="font-size:1rem;font-weight:700;color:#1e293b;margin-bottom:12px;">
+                Recent Orders
+            </h3>
+
+            <div th:if="${recentOrders.isEmpty()}" style="color:#94a3b8;font-size:0.9rem;margin-bottom:16px;">
+                No orders yet.
+            </div>
+
+            <table th:unless="${recentOrders.isEmpty()}" class="admin-table" style="margin-bottom:16px;">
+                <thead>
+                    <tr>
+                        <th>Order ID</th>
+                        <th>Date</th>
+                        <th>Total</th>
+                        <th>Delivery</th>
+                        <th>Status</th>
+                        <th>Payment</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="o : ${recentOrders}"
+                        class="admin-table-row-link"
+                        th:onclick="|window.location='@{/orders/{id}(id=${o.id})}'|">
+                        <td style="font-family:monospace;font-size:0.78rem"
+                            th:text="${#strings.substring(o.id.toString(), 0, 8) + '…'}"></td>
+                        <td th:text="${#temporals.format(o.createdOn, 'yyyy-MM-dd')}"></td>
+                        <td th:text="'€' + ${#numbers.formatDecimal(o.totalPrice, 1, 'NONE', 2, 'POINT')}"></td>
+                        <td th:text="'€' + ${#numbers.formatDecimal(o.deliveryCost, 1, 'NONE', 2, 'POINT')}"></td>
+                        <td>
+                            <span class="status-badge"
+                                  th:classappend="'status-' + ${o.status.name().toLowerCase()}"
+                                  th:text="${o.status.name()}"></span>
+                        </td>
+                        <td th:text="${o.paymentStatus.name()}"></td>
+                    </tr>
+                </tbody>
+            </table>
+
+        </div>
+    </main>
+</div>
+
+<footer th:insert="~{fragments/footer :: footer}"></footer>
+
+</body>
+</html>

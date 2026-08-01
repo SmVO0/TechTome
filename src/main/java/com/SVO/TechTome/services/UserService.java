@@ -12,6 +12,9 @@ import com.SVO.TechTome.web.dto.RegisterRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -89,5 +92,14 @@ public class UserService implements UserDetailsService {
 
     public List<User> getAllUsers() {
         return userRepository.findAll();
+    }
+
+    public Page<User> searchUsers(String query, int page) {
+        PageRequest pageable = PageRequest.of(page, 20, Sort.by("email"));
+        if (query == null || query.isBlank()) {
+            return userRepository.findAll(pageable);
+        }
+        return userRepository.findByEmailContainingIgnoreCaseOrUsernameContainingIgnoreCase(
+                query, query, pageable);
     }
 }

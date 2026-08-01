@@ -6,6 +6,7 @@
     <title>Admin – Users – TechTome</title>
     <link rel="stylesheet" href="/css/common.css">
     <link rel="stylesheet" href="/css/home.css">
+    <link rel="stylesheet" href="/css/admin.css">
 </head>
 <body>
 
@@ -29,57 +30,80 @@
     </div>
 </header>
 
+<div th:insert="~{fragments/adminNav :: adminNav}"></div>
+
 <div class="main-container">
-
-    <aside class="sidebar">
-        <nav class="menu" aria-label="Category navigation">
-            <a th:href="@{/home}">Home</a>
-            <a th:href="@{/category/computers}">Computers</a>
-            <a th:href="@{/category/laptops}">Laptops</a>
-            <a th:href="@{/category/keyboards}">Keyboards</a>
-            <a th:href="@{/category/mice}">Mice</a>
-            <a th:href="@{/category/monitors}">Monitors</a>
-        </nav>
-    </aside>
-
-    <main class="main-content">
+    <main class="main-content" style="grid-column: 1 / -1;">
         <div class="admin-panel">
 
-            <h2 class="admin-title">All Users</h2>
+            <h2 class="admin-title">User Management</h2>
 
-            <div th:if="${#lists.isEmpty(users)}" class="cart-empty">
+            <form th:action="@{/admin/users}" method="get" class="admin-search-form">
+                <input type="text" name="q" class="admin-search-input"
+                       placeholder="Search by username or email…"
+                       th:value="${query}">
+                <button type="submit" class="admin-btn">Search</button>
+                <a th:href="@{/admin/users}" class="admin-btn-secondary"
+                   th:if="${query != null and !#strings.isEmpty(query)}">Clear</a>
+            </form>
+
+            <p class="admin-result-count"
+               th:text="${users.totalElements} + ' user' + (${users.totalElements} != 1 ? 's' : '')"></p>
+
+            <div th:if="${users.isEmpty()}" class="cart-empty">
                 <p>No users found.</p>
             </div>
 
-            <div th:unless="${#lists.isEmpty(users)}">
+            <div th:unless="${users.isEmpty()}">
                 <table class="admin-table">
                     <thead>
                         <tr>
                             <th>Username</th>
                             <th>Email</th>
                             <th>Role</th>
+                            <th>Subscription</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr th:each="u : ${users}">
+                        <tr th:each="u : ${users}"
+                            class="admin-table-row-link"
+                            th:onclick="|window.location='@{/admin/users/{id}(id=${u.id})}'|">
                             <td th:text="${u.username}"></td>
                             <td th:text="${u.email}"></td>
                             <td>
                                 <span class="role-badge"
-                                      th:classappend="${u.role.name() == 'ADMIN'} ? 'role-admin'
-                                                    : (${u.role.name() == 'EDITOR'} ? 'role-editor' : 'role-user')"
-                                      th:text="${u.role.name()}">USER</span>
+                                      th:classappend="'role-' + ${u.role.name().toLowerCase()}"
+                                      th:text="${u.role.name()}"></span>
+                            </td>
+                            <td>
+                                <span th:if="${!u.subscriptions.isEmpty()}"
+                                      class="sub-badge"
+                                      th:classappend="'sub-' + ${u.subscriptions[0].type.name().toLowerCase()}"
+                                      th:text="${u.subscriptions[0].type.name()}"></span>
+                                <span th:if="${u.subscriptions.isEmpty()}" style="color:#94a3b8">—</span>
                             </td>
                         </tr>
                     </tbody>
                 </table>
-            </div>
 
-            <a th:href="@{/users/profile}" class="btn-continue" style="margin-top:24px; display:inline-block;">Back to Profile</a>
+                <nav class="admin-pagination" th:if="${users.totalPages > 1}" aria-label="Pagination">
+                    <a th:href="@{/admin/users(q=${query}, page=${users.number - 1})}"
+                       th:classappend="${users.first} ? ' disabled'"
+                       th:aria-disabled="${users.first}">‹ Prev</a>
+                    <th:block th:each="i : ${#numbers.sequence(0, users.totalPages - 1)}">
+                        <span th:if="${i == users.number}" class="current" th:text="${i + 1}"></span>
+                        <a th:unless="${i == users.number}"
+                           th:href="@{/admin/users(q=${query}, page=${i})}"
+                           th:text="${i + 1}"></a>
+                    </th:block>
+                    <a th:href="@{/admin/users(q=${query}, page=${users.number + 1})}"
+                       th:classappend="${users.last} ? ' disabled'"
+                       th:aria-disabled="${users.last}">Next ›</a>
+                </nav>
+            </div>
 
         </div>
     </main>
-
 </div>
 
 <footer th:insert="~{fragments/footer :: footer}"></footer>

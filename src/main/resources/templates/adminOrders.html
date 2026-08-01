@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin – Orders – TechTome</title>
+    <link rel="stylesheet" href="/css/common.css">
+    <link rel="stylesheet" href="/css/home.css">
+    <link rel="stylesheet" href="/css/admin.css">
+</head>
+<body>
+
+<header>
+    <div class="navbar">
+        <a th:href="@{/home}"><img src="/images/header/Logo.png" alt="TechTome" class="logo"></a>
+        <form class="search-box" th:action="@{/search}" method="get">
+            <input type="text" name="q" class="search-bar" placeholder="Search TechTome...">
+            <button type="submit" class="search-btn">
+                <img src="/images/header/search.png" alt="Search" class="search-icon">
+            </button>
+        </form>
+        <div class="icons">
+            <a th:href="@{/shopping}" aria-label="Shopping cart">
+                <img src="/images/header/shopping_cart.png" alt="Cart" class="nav-icon">
+            </a>
+            <a th:href="@{/users/profile}" aria-label="Profile">
+                <img src="/images/header/Profile.png" alt="Profile" class="nav-icon">
+            </a>
+        </div>
+    </div>
+</header>
+
+<div th:insert="~{fragments/adminNav :: adminNav}"></div>
+
+<div class="main-container">
+    <main class="main-content" style="grid-column: 1 / -1;">
+        <div class="admin-panel">
+
+            <h2 class="admin-title">Orders</h2>
+
+            <!-- Status filter -->
+            <div class="admin-filter-bar">
+                <span style="font-size:0.82rem;font-weight:600;color:#64748b;">Filter:</span>
+                <a th:href="@{/admin/orders}"
+                   th:classappend="${selectedStatus == null} ? ' active'">All</a>
+                <a th:each="s : ${statuses}"
+                   th:href="@{/admin/orders(status=${s.name()})}"
+                   th:text="${s.name()}"
+                   th:classappend="${selectedStatus != null and selectedStatus == s} ? ' active'"></a>
+            </div>
+
+            <p class="admin-result-count"
+               th:text="${orders.size()} + ' order' + (${orders.size()} != 1 ? 's' : '')"></p>
+
+            <div th:if="${orders.isEmpty()}" class="cart-empty">
+                <p>No orders found.</p>
+            </div>
+
+            <div th:unless="${orders.isEmpty()}" style="overflow-x:auto;">
+                <table class="admin-table">
+                    <thead>
+                        <tr>
+                            <th>Order ID</th>
+                            <th>Buyer</th>
+                            <th>Date</th>
+                            <th>Total</th>
+                            <th>Delivery</th>
+                            <th>Status</th>
+                            <th>Tracking</th>
+                            <th>Update Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="o : ${orders}">
+                            <td style="font-family:monospace;font-size:0.78rem;">
+                                <a th:href="@{/orders/{id}(id=${o.id})}"
+                                   th:text="${#strings.substring(o.id.toString(), 0, 8) + '…'}"
+                                   style="color:#3b82f6;text-decoration:none;"></a>
+                            </td>
+                            <td th:text="${o.buyer.email}"></td>
+                            <td th:text="${#temporals.format(o.createdOn, 'yyyy-MM-dd')}"></td>
+                            <td th:text="'€' + ${#numbers.formatDecimal(o.totalPrice, 1, 'NONE', 2, 'POINT')}"></td>
+                            <td th:text="'€' + ${#numbers.formatDecimal(o.deliveryCost, 1, 'NONE', 2, 'POINT')}"></td>
+                            <td>
+                                <span class="status-badge"
+                                      th:classappend="'status-' + ${o.status.name().toLowerCase()}"
+                                      th:text="${o.status.name()}"></span>
+                            </td>
+                            <td>
+                                <span th:if="${o.trackingNumber != null}"
+                                      style="font-family:monospace;font-size:0.82rem;"
+                                      th:text="${o.trackingNumber}"></span>
+                                <span th:unless="${o.trackingNumber != null}"
+                                      style="color:#94a3b8;">—</span>
+                            </td>
+                            <td>
+                                <form th:action="@{/admin/orders/{id}/status(id=${o.id})}"
+                                      method="post" style="display:flex;gap:6px;align-items:center;">
+                                    <select name="status" style="padding:4px 8px;border:1px solid #cbd5e1;border-radius:5px;font-size:0.82rem;">
+                                        <option th:each="s : ${statuses}"
+                                                th:value="${s.name()}"
+                                                th:text="${s.name()}"
+                                                th:selected="${o.status == s}"></option>
+                                    </select>
+                                    <button type="submit" class="admin-btn-sm">Save</button>
+                                </form>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+    </main>
+</div>
+
+<footer th:insert="~{fragments/footer :: footer}"></footer>
+
+</body>
+</html>
