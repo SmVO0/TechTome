@@ -102,7 +102,7 @@
                 <h3>Order Summary</h3>
                 <div class="summary-row">
                     <span>Subtotal</span>
-                    <span th:text="'€' + ${#numbers.formatDecimal(totalPrice, 1, 'NONE', 2, 'POINT')}"></span>
+                    <span class="cart-subtotal-value" th:text="'€' + ${#numbers.formatDecimal(totalPrice, 1, 'NONE', 2, 'POINT')}"></span>
                 </div>
                 <div class="summary-row">
                     <span>Shipping</span>

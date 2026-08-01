@@ -72,11 +72,22 @@
                         <p>Price</p>
                         <p th:text="'€' + ${#numbers.formatDecimal(item.price, 1, 'NONE', 2, 'POINT')}"></p>
                     </div>
-                    <form th:action="@{/shopping/add}" method="post"
-                          th:attr="data-item-name=${item.name}">
-                        <input type="hidden" name="itemId" th:value="${item.id}">
-                        <button type="submit">Add to Cart</button>
-                    </form>
+                    <div style="display:flex;gap:6px;align-items:center;">
+                        <form th:action="@{/shopping/add}" method="post"
+                              th:attr="data-item-name=${item.name}">
+                            <input type="hidden" name="itemId" th:value="${item.id}">
+                            <button type="submit">Add to Cart</button>
+                        </form>
+                        <form sec:authorize="isAuthenticated()"
+                              th:action="@{/wishlist/toggle}" method="post">
+                            <input type="hidden" name="itemId" th:value="${item.id}">
+                            <input type="hidden" name="redirectUrl"
+                                   th:value="@{'/category/' + ${category.name}}">
+                            <button type="submit" class="btn-wishlist-heart"
+                                    th:title="${wishlistedIds.contains(item.id)} ? 'Remove from wishlist' : 'Add to wishlist'"
+                                    th:text="${wishlistedIds.contains(item.id)} ? '♥' : '♡'"></button>
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>

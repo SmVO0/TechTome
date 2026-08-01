@@ -10,7 +10,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import static com.SVO.TechTome.constants.ExceptionMessages.STORE_ITEM_NOT_FOUND;
 
@@ -54,5 +56,11 @@ public class WishlistService {
 
     public boolean isWishlisted(UUID userId, UUID itemId) {
         return wishlistItemRepository.existsByUserIdAndStoreItemId(userId, itemId);
+    }
+
+    public Set<UUID> getWishlistedItemIds(UUID userId) {
+        return wishlistItemRepository.findByUserId(userId).stream()
+                .map(w -> w.getStoreItem().getId())
+                .collect(Collectors.toSet());
     }
 }

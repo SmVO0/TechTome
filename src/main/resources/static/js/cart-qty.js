@@ -6,8 +6,9 @@
     }
 
     function updateCartTotals(newCartTotal) {
-        document.querySelectorAll('.cart-total-value').forEach(function (el) {
-            el.textContent = formatPrice(newCartTotal);
+        var formatted = formatPrice(newCartTotal);
+        document.querySelectorAll('.cart-total-value, .cart-subtotal-value').forEach(function (el) {
+            el.textContent = formatted;
         });
     }
 

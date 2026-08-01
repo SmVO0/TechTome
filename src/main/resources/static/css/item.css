@@ -97,3 +97,22 @@
 }
 
 .item-detail-back:hover { color: var(--blue); }
+
+/* ─── Wishlist button on item detail ─────────────────────────────────── */
+
+.btn-wishlist {
+  background: none;
+  border: 1.5px solid #e53e3e;
+  color: #e53e3e;
+  font-size: 0.9rem;
+  font-weight: 600;
+  padding: 8px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+}
+
+.btn-wishlist:hover {
+  background: #e53e3e;
+  color: #fff;
+}

@@ -185,3 +185,20 @@
   color: #fff;
   pointer-events: none;
 }
+
+/* ─── Wishlist heart on card ─────────────────────────────────────────── */
+
+.btn-wishlist-heart {
+  background: none;
+  border: none;
+  font-size: 1.2rem;
+  line-height: 1;
+  padding: 4px 6px;
+  cursor: pointer;
+  color: #e53e3e;
+  transition: transform 0.15s;
+}
+
+.btn-wishlist-heart:hover {
+  transform: scale(1.2);
+}
