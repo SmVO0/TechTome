@@ -37,6 +37,7 @@ public class CategoryController {
 
         ModelAndView mav = new ModelAndView("category");
         mav.addObject("items", items);
+        mav.addObject("category", category);
         if (authMetaData != null) {
             mav.addObject("user", userService.getById(authMetaData.getId()));
         }
