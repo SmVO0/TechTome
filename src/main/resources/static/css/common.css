@@ -511,3 +511,19 @@ input[type="password"]:focus {
   opacity: 1;
   transform: translateX(0);
 }
+
+.nav-login-link {
+  color: var(--text-dark);
+  font-size: 0.9rem;
+  font-weight: 600;
+  text-decoration: none;
+  padding: 6px 14px;
+  border: 1.5px solid var(--text-dark);
+  border-radius: 6px;
+  transition: background 0.15s, color 0.15s;
+}
+
+.nav-login-link:hover {
+  background: var(--text-dark);
+  color: var(--white);
+}

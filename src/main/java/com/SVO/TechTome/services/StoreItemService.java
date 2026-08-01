@@ -42,4 +42,8 @@ public class StoreItemService {
     public void deleteById(UUID id) {
         storeItemRepository.deleteById(id);
     }
+
+    public List<StoreItem> getFeaturedItems() {
+        return storeItemRepository.findTop6ByFeaturedTrueOrderByNameAsc();
+    }
 }

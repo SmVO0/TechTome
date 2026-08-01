@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -19,12 +20,13 @@
             </button>
         </form>
         <div class="icons">
-            <a th:href="@{/shopping}" aria-label="Shopping cart">
+            <a th:href="@{/shopping}" aria-label="Shopping cart" sec:authorize="isAuthenticated()">
                 <img src="/images/header/shopping_cart.png" alt="Cart" class="nav-icon">
             </a>
-            <a th:href="@{/users/profile}" aria-label="Profile">
+            <a th:href="@{/users/profile}" aria-label="Profile" sec:authorize="isAuthenticated()">
                 <img src="/images/header/Profile.png" alt="Profile" class="nav-icon">
             </a>
+            <a th:href="@{/login}" sec:authorize="!isAuthenticated()" class="nav-login-link">Log In</a>
         </div>
     </div>
 </header>
@@ -92,6 +94,26 @@
             </div>
 
         </div>
+
+        <!-- Featured products -->
+        <section class="featured-section" th:if="${!featuredItems.isEmpty()}">
+            <h2 class="featured-title">Featured Products</h2>
+            <div class="featured-grid">
+                <a th:each="item : ${featuredItems}"
+                   th:href="@{/item/{id}(id=${item.id})}"
+                   class="featured-card">
+                    <div class="featured-img-wrap">
+                        <img th:src="${item.image}" th:alt="${item.name}" class="featured-img">
+                    </div>
+                    <div class="featured-info">
+                        <p class="featured-name" th:text="${item.name}"></p>
+                        <p class="featured-short" th:if="${item.shortDescription != null}"
+                           th:text="${item.shortDescription}"></p>
+                        <p class="featured-price" th:text="'€' + ${#numbers.formatDecimal(item.price, 1, 'NONE', 2, 'POINT')}"></p>
+                    </div>
+                </a>
+            </div>
+        </section>
 
     </main>
 

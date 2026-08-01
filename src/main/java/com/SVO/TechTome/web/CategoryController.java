@@ -5,7 +5,6 @@ import com.SVO.TechTome.services.CategoryService;
 import com.SVO.TechTome.security.AuthMetaData;
 import com.SVO.TechTome.models.StoreItem;
 import com.SVO.TechTome.services.StoreItemService;
-import com.SVO.TechTome.models.User;
 import com.SVO.TechTome.services.UserService;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
@@ -33,17 +32,14 @@ public class CategoryController {
 
     @GetMapping("/{name}")
     public ModelAndView getCategoryPage(@PathVariable String name, @AuthenticationPrincipal AuthMetaData authMetaData) {
-
-        User user = userService.getById(authMetaData.getId());
         Category category = categoryService.getCategory(name);
         List<StoreItem> items = storeItemService.getStoreItemsByCategory(category);
 
-         ModelAndView modelAndView = new ModelAndView();
-         modelAndView.setViewName("category");
-         modelAndView.addObject("items", items);
-         modelAndView.addObject("user", user);
-        
-         return modelAndView;
-
+        ModelAndView mav = new ModelAndView("category");
+        mav.addObject("items", items);
+        if (authMetaData != null) {
+            mav.addObject("user", userService.getById(authMetaData.getId()));
+        }
+        return mav;
     }
 }

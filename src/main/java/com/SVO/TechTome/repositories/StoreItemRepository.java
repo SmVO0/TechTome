@@ -17,4 +17,6 @@ public interface StoreItemRepository extends JpaRepository<StoreItem, UUID> {
 
     Page<StoreItem> findByNameContainingIgnoreCaseOrDescriptionContainingIgnoreCase(
             String name, String description, Pageable pageable);
+
+    List<StoreItem> findTop6ByFeaturedTrueOrderByNameAsc();
 }
