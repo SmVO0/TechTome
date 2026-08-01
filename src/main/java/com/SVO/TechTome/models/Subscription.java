@@ -26,11 +26,11 @@ public class Subscription {
     @ManyToOne
     private User owner;
 
-    @Column(nullable = false)
+    @Column(nullable = false, columnDefinition = "VARCHAR(20)")
     @Enumerated(EnumType.STRING)
     private SubscriptionType type;
 
-    @Column(nullable = false)
+    @Column(nullable = false, columnDefinition = "VARCHAR(20)")
     @Enumerated(EnumType.STRING)
     private SubscriptionStatus status;
 
