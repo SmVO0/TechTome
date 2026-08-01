@@ -15,6 +15,8 @@ public interface StoreItemRepository extends JpaRepository<StoreItem, UUID> {
 
     List<StoreItem> getAllByCategory(Category category);
 
+    Page<StoreItem> findByCategory(Category category, Pageable pageable);
+
     Page<StoreItem> findByNameContainingIgnoreCaseOrDescriptionContainingIgnoreCase(
             String name, String description, Pageable pageable);
 

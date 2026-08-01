@@ -5,6 +5,9 @@ import com.SVO.TechTome.models.StoreItem;
 import com.SVO.TechTome.repositories.StoreItemRepository;
 import com.SVO.TechTome.web.exception.DomainException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -24,6 +27,11 @@ public class StoreItemService {
 
     public List<StoreItem> getStoreItemsByCategory(Category category) {
         return storeItemRepository.getAllByCategory(category);
+    }
+
+    public Page<StoreItem> getStoreItemsByCategory(Category category, int page) {
+        PageRequest pageable = PageRequest.of(page, 12, Sort.by("name").ascending());
+        return storeItemRepository.findByCategory(category, pageable);
     }
 
     public StoreItem getById(UUID id) {

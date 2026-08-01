@@ -50,8 +50,18 @@
     </aside>
 
     <main class="main-content">
-        <div class="items-container">
-            <div class="item" th:each="item : ${items}">
+
+        <div class="search-header">
+            <h2 th:text="${#strings.capitalize(category.name)}"></h2>
+            <span class="search-count" th:text="'(' + ${items.totalElements} + ')'"></span>
+        </div>
+
+        <div th:if="${items.totalElements == 0}" class="search-empty">
+            <p>No products in this category yet.</p>
+        </div>
+
+        <div th:unless="${items.totalElements == 0}" class="items-container">
+            <div class="item" th:each="item : ${items.content}">
                 <a th:href="@{'/item/' + ${item.id}}">
                     <img th:src="${item.image}" alt="Item" class="item-image">
                     <p th:text="${item.name}">Item name</p>
@@ -70,6 +80,23 @@
                 </div>
             </div>
         </div>
+
+        <nav th:if="${items.totalPages > 1}" class="pagination" aria-label="Category pages">
+            <a th:if="${currentPage > 0}"
+               th:href="@{/category/{name}(name=${category.name}, page=${currentPage - 1})}"
+               class="page-link">&laquo; Previous</a>
+
+            <span th:each="i : ${#numbers.sequence(0, items.totalPages - 1)}">
+                <a th:href="@{/category/{name}(name=${category.name}, page=${i})}"
+                   th:text="${i + 1}"
+                   th:classappend="${i == currentPage} ? 'page-link page-active' : 'page-link'"></a>
+            </span>
+
+            <a th:if="${currentPage < items.totalPages - 1}"
+               th:href="@{/category/{name}(name=${category.name}, page=${currentPage + 1})}"
+               class="page-link">Next &raquo;</a>
+        </nav>
+
     </main>
 
 </div>
