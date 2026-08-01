@@ -22,6 +22,7 @@ import java.util.UUID;
 
 import static com.SVO.TechTome.constants.ExceptionMessages.CART_IS_EMPTY;
 import static com.SVO.TechTome.constants.ExceptionMessages.INSUFFICIENT_STOCK;
+import static com.SVO.TechTome.constants.ExceptionMessages.INVALID_DELIVERY_CITY;
 import static com.SVO.TechTome.constants.ExceptionMessages.ORDER_NOT_FOUND;
 
 @Slf4j
@@ -34,29 +35,35 @@ public class OrderService {
     private final StoreItemRepository storeItemRepository;
     private final SubscriptionService subscriptionService;
     private final DeliveryService deliveryService;
+    private final EcontCityService econtCityService;
 
     public OrderService(OrderRepository orderRepository,
                         UserService userService,
                         ShoppingCartService shoppingCartService,
                         StoreItemRepository storeItemRepository,
                         SubscriptionService subscriptionService,
-                        DeliveryService deliveryService) {
+                        DeliveryService deliveryService,
+                        EcontCityService econtCityService) {
         this.orderRepository = orderRepository;
         this.userService = userService;
         this.shoppingCartService = shoppingCartService;
         this.storeItemRepository = storeItemRepository;
         this.subscriptionService = subscriptionService;
         this.deliveryService = deliveryService;
+        this.econtCityService = econtCityService;
     }
 
     @Transactional
-    public Order checkout(UUID userId, String recipientName, String recipientPhone,
-                          String deliveryAddress, String deliveryCity) {
+    public Order checkout(UUID userId, CheckoutCommand cmd) {
         User user = userService.getById(userId);
         ShoppingCart cart = user.getShoppingCart();
 
         if (cart.getItems().isEmpty()) {
             throw new DomainException(CART_IS_EMPTY);
+        }
+
+        if (!econtCityService.isValidCity(cmd.deliveryCity(), cmd.deliveryPostCode())) {
+            throw new DomainException(INVALID_DELIVERY_CITY.formatted(cmd.deliveryCity(), cmd.deliveryPostCode()));
         }
 
         cart.getItems().forEach(ci -> {
@@ -70,9 +77,10 @@ public class OrderService {
         BigDecimal discountMultiplier = subscriptionService.getDiscountMultiplier(user);
         BigDecimal discountedTotal = rawTotal.multiply(discountMultiplier).setScale(2, RoundingMode.HALF_UP);
 
-        BigDecimal deliveryCost = subscriptionService.isShippingFree(user, discountedTotal)
-                ? BigDecimal.ZERO
-                : deliveryService.calculateDeliveryCost(deliveryCity);
+        // Always call calculateDeliveryCost to validate the street address with Econt before saving the order.
+        BigDecimal calculatedCost = deliveryService.calculateDeliveryCost(
+                cmd.deliveryCity(), cmd.deliveryPostCode(), cmd.deliveryStreet(), cmd.deliveryNum(), cmd.deliveryOther());
+        BigDecimal deliveryCost = subscriptionService.isShippingFree(user, discountedTotal) ? BigDecimal.ZERO : calculatedCost;
 
         Order order = Order.builder()
                 .buyer(user)
@@ -81,10 +89,13 @@ public class OrderService {
                 .totalPrice(discountedTotal)
                 .deliveryCost(deliveryCost)
                 .paymentStatus(PaymentStatus.MOCK_PAID)
-                .recipientName(recipientName)
-                .recipientPhone(recipientPhone)
-                .deliveryAddress(deliveryAddress)
-                .deliveryCity(deliveryCity)
+                .recipientName(cmd.recipientName())
+                .recipientPhone(cmd.recipientPhone())
+                .deliveryStreet(cmd.deliveryStreet())
+                .deliveryNum(cmd.deliveryNum())
+                .deliveryOther(cmd.deliveryOther())
+                .deliveryCity(cmd.deliveryCity())
+                .deliveryPostCode(cmd.deliveryPostCode())
                 .build();
         Order saved = orderRepository.save(order);
 

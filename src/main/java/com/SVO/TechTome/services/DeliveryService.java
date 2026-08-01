@@ -13,7 +13,7 @@ public interface DeliveryService {
     String createShipment(Order order);
 
     /**
-     * Calculates the delivery cost for the given destination city name.
+     * Calculates the delivery cost for the given destination address.
      */
-    BigDecimal calculateDeliveryCost(String cityName);
+    BigDecimal calculateDeliveryCost(String cityName, String postCode, String street, String num, String other);
 }

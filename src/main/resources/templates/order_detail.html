@@ -72,7 +72,10 @@
                     <p><strong>Recipient:</strong> <span th:text="${order.recipientName}"></span></p>
                     <p><strong>Phone:</strong> <span th:text="${order.recipientPhone}"></span></p>
                     <p><strong>Address:</strong>
-                        <span th:text="${order.deliveryAddress + ', ' + order.deliveryCity}"></span></p>
+                        <span th:text="${order.deliveryStreet + ' ' + order.deliveryNum
+                            + (order.deliveryOther != null ? ', ' + order.deliveryOther : '')
+                            + ', ' + order.deliveryCity
+                            + ' ' + order.deliveryPostCode}"></span></p>
                     <p th:if="${order.trackingNumber != null}">
                         <strong>Tracking Number:</strong>
                         <span class="tracking-number" th:text="${order.trackingNumber}"></span>

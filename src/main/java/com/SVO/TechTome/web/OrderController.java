@@ -4,10 +4,12 @@ import com.SVO.TechTome.models.Order;
 import com.SVO.TechTome.models.ShoppingCartItem;
 import com.SVO.TechTome.models.User;
 import com.SVO.TechTome.security.AuthMetaData;
+import com.SVO.TechTome.services.CheckoutCommand;
 import com.SVO.TechTome.services.OrderService;
 import com.SVO.TechTome.services.ShoppingCartService;
 import com.SVO.TechTome.services.UserService;
 import com.SVO.TechTome.web.dto.CheckoutRequest;
+import com.SVO.TechTome.web.exception.DomainException;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,6 +17,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
 import java.util.UUID;
@@ -48,11 +51,20 @@ public class OrderController {
 
     @PostMapping("/checkout/pay")
     public String pay(@AuthenticationPrincipal AuthMetaData authMetaData,
-                      @ModelAttribute CheckoutRequest form) {
-        Order order = orderService.checkout(authMetaData.getId(),
-                form.recipientName(), form.recipientPhone(),
-                form.deliveryAddress(), form.deliveryCity());
-        return "redirect:/orders/" + order.getId();
+                      @ModelAttribute CheckoutRequest form,
+                      RedirectAttributes redirectAttributes) {
+        try {
+            CheckoutCommand cmd = new CheckoutCommand(
+                    form.recipientName(), form.recipientPhone(),
+                    form.deliveryStreet(), form.deliveryNum(), form.deliveryOther(),
+                    form.deliveryCity(), form.deliveryPostCode());
+            Order order = orderService.checkout(authMetaData.getId(), cmd);
+            return "redirect:/orders/" + order.getId();
+        } catch (DomainException e) {
+            redirectAttributes.addFlashAttribute("checkoutError", e.getMessage());
+            redirectAttributes.addFlashAttribute("checkoutForm", form);
+            return "redirect:/checkout/payment";
+        }
     }
 
     @GetMapping("/orders")

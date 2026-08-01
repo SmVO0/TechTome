@@ -53,11 +53,20 @@ public class Order {
     @Column(length = 20)
     private String recipientPhone;
 
-    @Column(length = 300)
-    private String deliveryAddress;
+    @Column(length = 150)
+    private String deliveryStreet;
+
+    @Column(length = 20)
+    private String deliveryNum;
+
+    @Column(length = 150)
+    private String deliveryOther;
 
     @Column(length = 100)
     private String deliveryCity;
+
+    @Column(length = 10)
+    private String deliveryPostCode;
 
     @Column(length = 50)
     private String trackingNumber;

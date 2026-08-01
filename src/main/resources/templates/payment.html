@@ -6,6 +6,34 @@
     <title>Checkout – TechTome</title>
     <link rel="stylesheet" href="/css/common.css">
     <link rel="stylesheet" href="/css/home.css">
+    <style>
+        .city-autocomplete { position: relative; }
+        .city-dropdown {
+            position: absolute; z-index: 100; width: 100%;
+            background: var(--card-bg, #fff); border: 1px solid #ccc;
+            border-top: none; border-radius: 0 0 6px 6px;
+            list-style: none; margin: 0; padding: 0;
+            max-height: 220px; overflow-y: auto;
+            box-shadow: 0 4px 12px rgba(0,0,0,.12);
+        }
+        .city-dropdown li {
+            padding: 0.55rem 0.75rem; cursor: pointer; font-size: 0.9rem;
+        }
+        .city-dropdown li:hover { background: #4a90e2; color: #fff; }
+        .postcode-display {
+            margin-top: 0.3rem; font-size: 0.85rem; color: #595959;
+            min-height: 1.2em;
+        }
+        @media (prefers-color-scheme: dark) {
+            .postcode-display { color: #a8a8a8; }
+        }
+        .checkout-error-banner {
+            background: #fde8e8; color: #c0392b;
+            border: 1px solid #f5c6c6; border-radius: 6px;
+            padding: 0.75rem 1rem; margin-bottom: 1.25rem;
+            font-size: 0.92rem; line-height: 1.45;
+        }
+    </style>
 </head>
 <body>
 
@@ -50,31 +78,60 @@
                 <h2>Delivery Details</h2>
                 <p class="payment-note">Payment is processed automatically on order confirmation.</p>
 
+                <div th:if="${checkoutError}" class="checkout-error-banner" th:text="${checkoutError}"></div>
+
                 <form th:action="@{/checkout/pay}" method="post" class="checkout-form">
 
                     <div class="form-group">
                         <label for="recipientName">Full Name</label>
                         <input type="text" id="recipientName" name="recipientName"
-                               th:value="${user.firstName + ' ' + user.lastName}"
+                               th:value="${checkoutForm?.recipientName ?: #strings.trim((user.firstName ?: '') + ' ' + (user.lastName ?: ''))}"
                                placeholder="Full name" required>
                     </div>
 
                     <div class="form-group">
                         <label for="recipientPhone">Phone Number</label>
                         <input type="tel" id="recipientPhone" name="recipientPhone"
-                               placeholder="+359 888 000 000" required>
+                               th:value="${checkoutForm?.recipientPhone}"
+                               placeholder="+359 888 000 000"
+                               pattern="[\+]?[0-9]{7,15}"
+                               title="Enter a valid phone number (7–15 digits, optional leading +)"
+                               required>
                     </div>
 
                     <div class="form-group">
-                        <label for="deliveryCity">City</label>
-                        <input type="text" id="deliveryCity" name="deliveryCity"
-                               placeholder="Sofia" required>
+                        <label for="citySearch">City</label>
+                        <div class="city-autocomplete">
+                            <input type="text" id="citySearch" autocomplete="off"
+                                   th:value="${checkoutForm?.deliveryCity != null ? checkoutForm.deliveryCity + ' (' + checkoutForm.deliveryPostCode + ')' : ''}"
+                                   placeholder="Type to search…" required>
+                            <ul id="cityDropdown" class="city-dropdown" hidden></ul>
+                        </div>
+                        <div class="postcode-display" id="postCodeDisplay"
+                             th:text="${checkoutForm?.deliveryPostCode != null ? 'Postal code: ' + checkoutForm.deliveryPostCode : ''}"></div>
+                        <input type="hidden" id="deliveryCity"     name="deliveryCity" th:value="${checkoutForm?.deliveryCity}">
+                        <input type="hidden" id="deliveryPostCode" name="deliveryPostCode" th:value="${checkoutForm?.deliveryPostCode}">
                     </div>
 
                     <div class="form-group">
-                        <label for="deliveryAddress">Street Address</label>
-                        <input type="text" id="deliveryAddress" name="deliveryAddress"
-                               placeholder="Street, number, floor, apartment" required>
+                        <label for="deliveryStreet">Street</label>
+                        <input type="text" id="deliveryStreet" name="deliveryStreet"
+                               th:value="${checkoutForm?.deliveryStreet}"
+                               placeholder="ул. Витоша" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="deliveryNum">Street Number</label>
+                        <input type="text" id="deliveryNum" name="deliveryNum"
+                               th:value="${checkoutForm?.deliveryNum}"
+                               placeholder="12" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="deliveryOther">Floor / Apartment <span style="font-weight:normal;">(optional)</span></label>
+                        <input type="text" id="deliveryOther" name="deliveryOther"
+                               th:value="${checkoutForm?.deliveryOther}"
+                               placeholder="бл. 3, вх. А, ет. 4, ап. 15">
                     </div>
 
                     <div class="payment-placeholder">
@@ -117,5 +174,6 @@
 
 <footer th:insert="~{fragments/footer :: footer}"></footer>
 
+<script src="/js/econt-city.js"></script>
 </body>
 </html>

@@ -19,5 +19,8 @@ public class EcontConfig {
         private String name;
         private String phone;
         private String city;
+        private String postCode;
+        private String street;
+        private String num;
     }
 }
