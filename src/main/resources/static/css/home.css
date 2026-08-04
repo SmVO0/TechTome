@@ -97,18 +97,68 @@
   pointer-events: none;
 }
 
+.carousel-eyebrow {
+  display: block;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  opacity: 0.70;
+  margin-bottom: 6px;
+}
+
 .carousel-caption h2 {
-  margin: 0 0 4px;
-  font-size: 28px;
+  margin: 0 0 6px;
+  font-size: 32px;
   font-weight: 800;
-  letter-spacing: -0.3px;
+  letter-spacing: -0.5px;
+  text-shadow: 0 1px 4px rgba(0,0,0,0.3);
 }
 
 .carousel-caption p {
   margin: 0;
   font-size: 14px;
-  opacity: 0.80;
+  opacity: 0.85;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.3);
 }
+
+/* ── Category strip ─────────────────────────────────────────────────────── */
+.category-strip {
+  display: flex;
+  gap: 10px;
+  padding: 16px 24px;
+  background: var(--white);
+  border-bottom: 1px solid var(--border);
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.category-strip::-webkit-scrollbar { display: none; }
+
+.category-chip {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 8px 16px;
+  border-radius: 24px;
+  border: 1px solid var(--border);
+  background: var(--bg);
+  color: var(--text-dark);
+  font-size: 13px;
+  font-weight: 600;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: background 0.14s, border-color 0.14s, color 0.14s;
+  flex-shrink: 0;
+}
+
+.category-chip:hover {
+  background: var(--blue-light);
+  border-color: var(--navy-mid);
+  color: var(--navy-mid);
+}
+
+.chip-icon { font-size: 16px; line-height: 1; }
 
 /* Prev / Next buttons */
 .carousel-btn {
@@ -367,7 +417,7 @@
 .featured-title {
   font-size: 1.25rem;
   font-weight: 700;
-  color: var(--navy-dark);
+  color: var(--navy);
   margin-bottom: 16px;
 }
 
@@ -422,7 +472,7 @@
 .featured-name {
   font-size: 0.88rem;
   font-weight: 600;
-  color: var(--navy-dark);
+  color: var(--navy);
   margin: 0;
   line-height: 1.3;
 }
@@ -443,3 +493,236 @@
   color: var(--navy-mid);
   margin: 4px 0 0;
 }
+
+/* ── Profile dashboard ──────────────────────────────────────────────────── */
+.profile-dashboard {
+  padding: 32px 40px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  max-width: 860px;
+}
+
+.profile-header-card {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 24px 28px;
+}
+
+.profile-avatar-lg {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid var(--border);
+  flex-shrink: 0;
+}
+
+.profile-avatar-placeholder {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  background: var(--navy);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--white);
+  flex-shrink: 0;
+}
+
+.profile-header-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.profile-header-info h1 {
+  font-size: 20px;
+  font-weight: 700;
+  margin: 0;
+  color: var(--text-dark);
+}
+
+.profile-header-info .profile-email {
+  font-size: 13px;
+  color: var(--text-mid);
+  margin: 0;
+}
+
+.role-badge-inline {
+  display: inline-block;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 2px 8px;
+  border-radius: 10px;
+}
+
+.role-badge-inline.role-admin  { background: #fef3c7; color: #92400e; }
+.role-badge-inline.role-editor { background: #dbeafe; color: #1e40af; }
+.role-badge-inline.role-user   { background: #f3f4f6; color: var(--text-mid); }
+
+.profile-header-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: flex-end;
+}
+
+.profile-cards-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+.pcard {
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 20px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.pcard-full { grid-column: 1 / -1; }
+
+.pcard-title {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.10em;
+  text-transform: uppercase;
+  color: var(--text-mid);
+  margin: 0;
+}
+
+/* Subscription card */
+.tier-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 15px;
+  font-weight: 700;
+  padding: 4px 14px;
+  border-radius: 20px;
+}
+
+.tier-default  { background: #f3f4f6; color: var(--text-mid); }
+.tier-tech     { background: #dbeafe; color: #1e40af; }
+.tier-standard { background: #ede9fe; color: #5b21b6; }
+.tier-premium  { background: #fef3c7; color: #92400e; }
+
+.tier-expiry {
+  font-size: 12px;
+  color: var(--text-mid);
+  margin: 0;
+}
+
+.btn-upgrade {
+  display: inline-block;
+  padding: 7px 16px;
+  border-radius: 6px;
+  background: var(--navy);
+  color: var(--white);
+  font-size: 13px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: background 0.15s;
+  align-self: flex-start;
+}
+
+.btn-upgrade:hover { background: var(--navy-mid); color: var(--white); }
+
+/* Recent orders */
+.recent-order-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--border);
+  text-decoration: none;
+  color: inherit;
+}
+
+.recent-order-row:last-child { border-bottom: none; }
+
+.recent-order-row:hover { background: var(--blue-light); margin: 0 -8px; padding-left: 8px; padding-right: 8px; border-radius: 6px; }
+
+.order-date {
+  font-size: 12px;
+  color: var(--text-mid);
+  white-space: nowrap;
+  min-width: 80px;
+}
+
+.order-id-short {
+  font-size: 12px;
+  font-family: monospace;
+  color: var(--text-mid);
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.order-total {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-dark);
+  white-space: nowrap;
+}
+
+.orders-empty, .wishlist-empty {
+  font-size: 13px;
+  color: var(--text-mid);
+  margin: 0;
+}
+
+/* Stat card (wishlist) */
+.stat-value {
+  font-size: 32px;
+  font-weight: 800;
+  color: var(--navy);
+  margin: 0;
+  line-height: 1;
+}
+
+.stat-label {
+  font-size: 13px;
+  color: var(--text-mid);
+  margin: 2px 0 0;
+}
+
+.btn-link {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--navy-mid);
+  text-decoration: underline;
+  align-self: flex-start;
+}
+
+.btn-link:hover { color: var(--blue); }
+
+/* Quick nav links at the bottom of the profile */
+.profile-nav-links {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.profile-nav-links a {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--navy-mid);
+  text-decoration: underline;
+}
+
+.profile-nav-links a:hover { color: var(--blue); }

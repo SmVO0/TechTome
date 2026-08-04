@@ -45,23 +45,101 @@
     </aside>
 
     <main class="main-content">
-        <div class="profile">
+        <div class="profile-dashboard">
 
-            <div class="profile-name">
-                <h1 th:text="${user.username}">Username</h1>
+            <!-- Header card: avatar, name, email, role -->
+            <div class="profile-header-card">
+                <div th:if="${user.profilePicture != null}" class="profile-avatar-placeholder"
+                     style="overflow:hidden;padding:0;">
+                    <img th:src="${user.profilePicture}" th:alt="${user.username}"
+                         style="width:100%;height:100%;object-fit:cover;">
+                </div>
+                <div th:if="${user.profilePicture == null}" class="profile-avatar-placeholder"
+                     th:text="${#strings.toUpperCase(#strings.substring(user.username, 0, 1))}">U</div>
+
+                <div class="profile-header-info">
+                    <h1 th:text="${user.username}">username</h1>
+                    <p class="profile-email" th:text="${user.email}">email</p>
+                    <span class="role-badge-inline"
+                          th:classappend="${user.role.name() == 'ADMIN'} ? 'role-admin' : (${user.role.name() == 'EDITOR'} ? 'role-editor' : 'role-user')"
+                          th:text="${user.role.name()}">USER</span>
+                </div>
+
+                <div class="profile-header-actions">
+                    <a th:href="@{/users/profile/info}" class="btn-upgrade" style="background:var(--navy-mid);">
+                        Personal Info
+                    </a>
+                    <a th:if="${user.role.name() == 'ADMIN'}" th:href="@{/admin/users}" class="btn-upgrade"
+                       style="background:#92400e;">Admin Panel</a>
+                </div>
             </div>
 
-            <div class="profile-image">
-                <img th:src="${user.profilePicture}"
-                     th:alt="${user.username}"
-                     class="profile-avatar">
-            </div>
+            <!-- Two-column card grid -->
+            <div class="profile-cards-grid">
 
-            <div class="profile-info">
-                <a th:href="@{/users/profile/info}">Personal info</a>
-                <a th:href="@{/orders}">Order history</a>
-                <a th:href="@{/users/subscription}">Manage subscription</a>
-                <a th:if="${user.role.name() == 'ADMIN'}" th:href="@{/users}">Admin panel</a>
+                <!-- Subscription card -->
+                <div class="pcard">
+                    <p class="pcard-title">Subscription</p>
+
+                    <span class="tier-badge"
+                          th:classappend="${subscription.type.name() == 'PREMIUM'} ? 'tier-premium' : (${subscription.type.name() == 'STANDARD'} ? 'tier-standard' : (${subscription.type.name() == 'TECH'} ? 'tier-tech' : 'tier-default'))">
+                        <span th:text="${subscription.type.name() == 'PREMIUM'} ? '★' : (${subscription.type.name() == 'STANDARD'} ? '◆' : '●')"></span>
+                        <span th:text="${subscription.type.name()}">DEFAULT</span>
+                    </span>
+
+                    <p class="tier-expiry"
+                       th:text="'Renews ' + ${#temporals.format(subscription.completedOn, 'dd MMM yyyy')}">
+                        Renews —
+                    </p>
+
+                    <a th:unless="${subscription.type.name() == 'PREMIUM'}"
+                       th:href="@{/users/subscription}" class="btn-upgrade">
+                        Upgrade plan
+                    </a>
+                    <a th:if="${subscription.type.name() == 'PREMIUM'}"
+                       th:href="@{/users/subscription}" class="btn-link">
+                        Manage subscription
+                    </a>
+                </div>
+
+                <!-- Wishlist stat card -->
+                <div class="pcard">
+                    <p class="pcard-title">Wishlist</p>
+                    <p class="stat-value" th:text="${wishlistCount}">0</p>
+                    <p class="stat-label">saved item<span th:text="${wishlistCount != 1} ? 's' : ''"></span></p>
+                    <a th:href="@{/wishlist}" class="btn-link">View wishlist &rarr;</a>
+                </div>
+
+                <!-- Recent orders card -->
+                <div class="pcard pcard-full">
+                    <p class="pcard-title">Recent Orders</p>
+
+                    <p class="orders-empty" th:if="${#lists.isEmpty(recentOrders)}">
+                        No orders yet. <a th:href="@{/home}" class="btn-link">Start shopping</a>
+                    </p>
+
+                    <div th:unless="${#lists.isEmpty(recentOrders)}">
+                        <a th:each="order : ${recentOrders}"
+                           th:href="@{/orders/{id}(id=${order.id})}"
+                           class="recent-order-row">
+                            <span class="order-date"
+                                  th:text="${#temporals.format(order.createdOn, 'dd MMM yyyy')}">—</span>
+                            <span class="order-id-short"
+                                  th:text="'#' + ${#strings.substring(order.id.toString(), 0, 8).toUpperCase()}">—</span>
+                            <span class="status-badge"
+                                  th:classappend="${order.status.name() == 'DELIVERED'} ? 'status-delivered' :
+                                                  (${order.status.name() == 'CANCELLED'} ? 'status-cancelled' : 'status-pending')"
+                                  th:text="${order.status.name()}">—</span>
+                            <span class="order-total"
+                                  th:text="'€' + ${#numbers.formatDecimal(order.totalPrice, 1, 'NONE', 2, 'POINT')}">—</span>
+                        </a>
+                    </div>
+
+                    <a th:href="@{/orders}" class="btn-link" style="margin-top:4px;">
+                        View all orders &rarr;
+                    </a>
+                </div>
+
             </div>
 
         </div>

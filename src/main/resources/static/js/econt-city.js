@@ -34,7 +34,7 @@
                     return;
                 }
                 cities.forEach(function (city) {
-                    var li = document.createElement('li');
+                    let li = document.createElement('li');
                     li.textContent = city.name + ' (' + city.postCode + ')';
                     li.addEventListener('click', function () {
                         searchInput.value    = city.name + ' (' + city.postCode + ')';

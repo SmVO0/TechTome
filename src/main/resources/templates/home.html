@@ -52,31 +52,56 @@
 
                 <!-- Slide 1 — Laptops -->
                 <a th:href="@{/category/laptops}" class="carousel-slide">
-                    <img src="https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=1200&h=340&fit=crop&auto=format"
+                    <img src="https://images.unsplash.com/photo-1525547719571-a2d4ac8945e2?w=1200&h=380&fit=crop&auto=format"
                          alt="Laptops">
                     <div class="carousel-caption">
+                        <span class="carousel-eyebrow">New arrivals</span>
                         <h2>Laptops</h2>
-                        <p>Powerful machines for work and play</p>
+                        <p>Thin, powerful, and ready to go wherever you are</p>
                     </div>
                 </a>
 
-                <!-- Slide 2 — Keyboards -->
-                <a th:href="@{/category/keyboards}" class="carousel-slide">
-                    <img src="https://images.unsplash.com/photo-1587829741301-dc798b83add3?w=1200&h=340&fit=crop&auto=format"
-                         alt="Keyboards">
+                <!-- Slide 2 — Computers -->
+                <a th:href="@{/category/computers}" class="carousel-slide">
+                    <img src="https://images.unsplash.com/photo-1587202372775-e229f172b9d7?w=1200&h=380&fit=crop&auto=format"
+                         alt="Computers">
                     <div class="carousel-caption">
-                        <h2>Keyboards</h2>
-                        <p>Mechanical and membrane keyboards for every typist</p>
+                        <span class="carousel-eyebrow">Build your setup</span>
+                        <h2>Computers</h2>
+                        <p>Desktop towers and mini PCs for every workload</p>
                     </div>
                 </a>
 
                 <!-- Slide 3 — Monitors -->
                 <a th:href="@{/category/monitors}" class="carousel-slide">
-                    <img src="https://images.unsplash.com/photo-1527443224154-c4a573d5b6a4?w=1200&h=340&fit=crop&auto=format"
+                    <img src="https://images.unsplash.com/photo-1527443224154-c4a573d5dd31?w=1200&h=380&fit=crop&auto=format"
                          alt="Monitors">
                     <div class="carousel-caption">
+                        <span class="carousel-eyebrow">See more</span>
                         <h2>Monitors</h2>
-                        <p>Crystal-clear displays for any setup</p>
+                        <p>4K, ultrawide, and high-refresh displays for any setup</p>
+                    </div>
+                </a>
+
+                <!-- Slide 4 — Keyboards -->
+                <a th:href="@{/category/keyboards}" class="carousel-slide">
+                    <img src="https://images.unsplash.com/photo-1595044426077-d36d9236d54a?w=1200&h=380&fit=crop&auto=format"
+                         alt="Keyboards">
+                    <div class="carousel-caption">
+                        <span class="carousel-eyebrow">Feel the difference</span>
+                        <h2>Keyboards</h2>
+                        <p>Mechanical switches, wireless freedom, endless customisation</p>
+                    </div>
+                </a>
+
+                <!-- Slide 5 — Mice -->
+                <a th:href="@{/category/mice}" class="carousel-slide">
+                    <img src="https://images.unsplash.com/photo-1527814050087-3793815479db?w=1200&h=380&fit=crop&auto=format"
+                         alt="Mice">
+                    <div class="carousel-caption">
+                        <span class="carousel-eyebrow">Precision control</span>
+                        <h2>Mice</h2>
+                        <p>Ultralight wireless gaming mice and ergonomic everyday options</p>
                     </div>
                 </a>
 
@@ -91,9 +116,30 @@
                 <button type="button" class="carousel-dot active" aria-label="Slide 1"></button>
                 <button type="button" class="carousel-dot" aria-label="Slide 2"></button>
                 <button type="button" class="carousel-dot" aria-label="Slide 3"></button>
+                <button type="button" class="carousel-dot" aria-label="Slide 4"></button>
+                <button type="button" class="carousel-dot" aria-label="Slide 5"></button>
             </div>
 
         </div>
+
+        <!-- Shop by category strip -->
+        <nav class="category-strip" aria-label="Shop by category">
+            <a th:href="@{/category/laptops}" class="category-chip">
+                <span class="chip-icon">💻</span><span>Laptops</span>
+            </a>
+            <a th:href="@{/category/computers}" class="category-chip">
+                <span class="chip-icon">🖥️</span><span>Computers</span>
+            </a>
+            <a th:href="@{/category/monitors}" class="category-chip">
+                <span class="chip-icon">📺</span><span>Monitors</span>
+            </a>
+            <a th:href="@{/category/keyboards}" class="category-chip">
+                <span class="chip-icon">⌨️</span><span>Keyboards</span>
+            </a>
+            <a th:href="@{/category/mice}" class="category-chip">
+                <span class="chip-icon">🖱️</span><span>Mice</span>
+            </a>
+        </nav>
 
         <!-- Featured products -->
         <section class="featured-section" th:if="${!featuredItems.isEmpty()}">
