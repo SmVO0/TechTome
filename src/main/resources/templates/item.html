@@ -54,7 +54,8 @@
         <div class="item-detail">
 
             <div class="item-detail-image-wrap">
-                <img th:src="${item.image}" th:alt="${item.name}" class="item-detail-image">
+                <img th:src="${item.image}" th:alt="${item.name}" class="item-detail-image"
+                     onerror="this.onerror=null;this.src='/images/placeholder.svg'">
             </div>
 
             <div class="item-detail-content">

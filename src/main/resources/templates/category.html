@@ -63,7 +63,8 @@
         <div th:unless="${items.totalElements == 0}" class="items-container">
             <div class="item" th:each="item : ${items.content}">
                 <a th:href="@{'/item/' + ${item.id}}">
-                    <img th:src="${item.image}" alt="Item" class="item-image">
+                    <img th:src="${item.image}" alt="Item" class="item-image"
+                         onerror="this.onerror=null;this.src='/images/placeholder.svg'">
                     <p th:text="${item.name}">Item name</p>
                 </a>
                 <hr>

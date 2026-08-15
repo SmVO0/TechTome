@@ -73,7 +73,8 @@
                                 <td class="cart-item-img-cell">
                                     <img th:src="${cartItem.storeItem.image}"
                                          th:alt="${cartItem.storeItem.name}"
-                                         class="cart-item-img">
+                                         class="cart-item-img"
+                                         onerror="this.onerror=null;this.src='/images/placeholder.svg'">
                                 </td>
                                 <td class="cart-item-name" th:text="${cartItem.storeItem.name}"></td>
                                 <td th:text="'€' + ${#numbers.formatDecimal(cartItem.unitPrice, 1, 'NONE', 2, 'POINT')}"></td>

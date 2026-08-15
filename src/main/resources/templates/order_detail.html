@@ -101,7 +101,8 @@
                             <td class="cart-item-img-cell">
                                 <img th:src="${oi.storeItem.image}"
                                      th:alt="${oi.storeItem.name}"
-                                     class="cart-item-img">
+                                     class="cart-item-img"
+                                     onerror="this.onerror=null;this.src='/images/placeholder.svg'">
                             </td>
                             <td class="cart-item-name" th:text="${oi.storeItem.name}"></td>
                             <td th:text="'€' + ${#numbers.formatDecimal(oi.unitPrice, 1, 'NONE', 2, 'POINT')}"></td>

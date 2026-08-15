@@ -56,7 +56,8 @@
         <div th:unless="${#lists.isEmpty(items)}" class="items-container">
             <div class="item" th:each="wi : ${items}">
                 <a th:href="@{'/item/' + ${wi.storeItem.id}}">
-                    <img th:src="${wi.storeItem.image}" th:alt="${wi.storeItem.name}" class="item-image">
+                    <img th:src="${wi.storeItem.image}" th:alt="${wi.storeItem.name}" class="item-image"
+                         onerror="this.onerror=null;this.src='/images/placeholder.svg'">
                     <p th:text="${wi.storeItem.name}">Item name</p>
                 </a>
                 <hr>

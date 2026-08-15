@@ -149,7 +149,8 @@
                    th:href="@{/item/{id}(id=${item.id})}"
                    class="featured-card">
                     <div class="featured-img-wrap">
-                        <img th:src="${item.image}" th:alt="${item.name}" class="featured-img">
+                        <img th:src="${item.image}" th:alt="${item.name}" class="featured-img"
+                             onerror="this.onerror=null;this.src='/images/placeholder.svg'">
                     </div>
                     <div class="featured-info">
                         <p class="featured-name" th:text="${item.name}"></p>
