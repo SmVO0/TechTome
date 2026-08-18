@@ -88,18 +88,39 @@ public class EcontDeliveryService implements DeliveryService {
         return DEFAULT_DELIVERY_COST;
     }
 
-    private LabelResponse post(LabelRequest request) {
-        HttpHeaders headers = new HttpHeaders();
-        headers.setBasicAuth(config.getUsername(), config.getPassword());
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        headers.setAccept(List.of(MediaType.APPLICATION_JSON));
+    @Override
+    public TrackingStatus getTrackingStatus(String trackingNumber) {
+        try {
+            TrackingRequest request = new TrackingRequest(List.of(trackingNumber));
+            String url = config.getApiUrl() + "/Tracking/LabelService.getShipmentStatuses.json";
+            TrackingResponse response = restTemplate.postForObject(
+                    url, new HttpEntity<>(request, buildHeaders()), TrackingResponse.class);
 
+            if (response != null && response.shipmentStatuses() != null && !response.shipmentStatuses().isEmpty()) {
+                ShipmentEvent event = response.shipmentStatuses().get(0);
+                return new TrackingStatus(event.lastOperationDescription(), event.lastOperationDate());
+            }
+        } catch (Exception e) {
+            log.warn("Econt tracking lookup failed for [{}]: {}", trackingNumber, e.getMessage());
+        }
+        return null;
+    }
+
+    private LabelResponse post(LabelRequest request) {
         log.debug("Econt request: sender city={} postCode={}",
                 request.label().senderAddress().city().name(),
                 request.label().senderAddress().city().postCode());
 
         String url = config.getApiUrl() + "/Shipments/LabelService.createLabel.json";
-        return restTemplate.postForObject(url, new HttpEntity<>(request, headers), LabelResponse.class);
+        return restTemplate.postForObject(url, new HttpEntity<>(request, buildHeaders()), LabelResponse.class);
+    }
+
+    private HttpHeaders buildHeaders() {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setBasicAuth(config.getUsername(), config.getPassword());
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.setAccept(List.of(MediaType.APPLICATION_JSON));
+        return headers;
     }
 
     private LabelRequest buildRequest(Order order, String mode) {
@@ -147,4 +168,10 @@ public class EcontDeliveryService implements DeliveryService {
     record LabelResponse(ShipmentStatus label, String courierRequestID) {}
 
     record ShipmentStatus(String shipmentNumber, BigDecimal totalPrice) {}
+
+    record TrackingRequest(List<String> shipmentNumbers) {}
+
+    record TrackingResponse(List<ShipmentEvent> shipmentStatuses) {}
+
+    record ShipmentEvent(String shipmentNumber, String lastOperationDescription, String lastOperationDate) {}
 }

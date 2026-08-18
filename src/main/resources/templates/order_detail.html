@@ -78,10 +78,16 @@
                             + (order.deliveryOther != null ? ', ' + order.deliveryOther : '')
                             + ', ' + order.deliveryCity
                             + ' ' + order.deliveryPostCode}"></span></p>
-                    <p th:if="${order.trackingNumber != null}">
-                        <strong>Tracking Number:</strong>
-                        <span class="tracking-number" th:text="${order.trackingNumber}"></span>
-                    </p>
+                    <div th:if="${order.trackingNumber != null}">
+                        <p>
+                            <strong>Tracking Number:</strong>
+                            <span class="tracking-number" th:text="${order.trackingNumber}"></span>
+                        </p>
+                        <p id="tracking-status-row">
+                            <strong>Status:</strong>
+                            <span id="tracking-status" style="color:var(--muted, #777)">Fetching…</span>
+                        </p>
+                    </div>
                     <p th:unless="${order.trackingNumber != null}">
                         <strong>Tracking:</strong> <span>Pending</span>
                     </p>
@@ -144,6 +150,27 @@
 </div>
 
 <footer th:insert="~{fragments/footer :: footer}"></footer>
+
+<script th:if="${order.trackingNumber != null}" th:inline="javascript">
+(function () {
+    var orderId = /*[[${order.id}]]*/ '';
+    fetch('/orders/' + orderId + '/tracking')
+        .then(function (r) { return r.ok ? r.json() : null; })
+        .then(function (data) {
+            var el = document.getElementById('tracking-status');
+            if (data && data.statusDescription) {
+                el.textContent = data.statusDescription +
+                    (data.lastEventDate ? '  (' + data.lastEventDate + ')' : '');
+                el.style.color = '';
+            } else {
+                document.getElementById('tracking-status-row').style.display = 'none';
+            }
+        })
+        .catch(function () {
+            document.getElementById('tracking-status-row').style.display = 'none';
+        });
+}());
+</script>
 
 </body>
 </html>

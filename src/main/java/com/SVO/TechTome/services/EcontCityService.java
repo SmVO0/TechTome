@@ -1,15 +1,16 @@
 package com.SVO.TechTome.services;
 
 import com.SVO.TechTome.config.EcontConfig;
-import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
 
 @Slf4j
 @Service
@@ -19,14 +20,14 @@ public class EcontCityService {
 
     private final RestTemplate restTemplate;
     private final EcontConfig config;
-    private List<CityOption> cities = List.of();
+    private final AtomicReference<List<CityOption>> cities = new AtomicReference<>(List.of());
 
     public EcontCityService(RestTemplate restTemplate, EcontConfig config) {
         this.restTemplate = restTemplate;
         this.config = config;
     }
 
-    @PostConstruct
+    @Scheduled(initialDelay = 0, fixedDelay = 6 * 60 * 60 * 1000)
     public void loadCities() {
         try {
             HttpHeaders headers = new HttpHeaders();
@@ -39,11 +40,12 @@ public class EcontCityService {
                     url, new HttpEntity<>("{}", headers), NomenclatureResponse.class);
 
             if (response != null && response.cities() != null) {
-                cities = response.cities().stream()
+                List<CityOption> loaded = response.cities().stream()
                         .filter(c -> c.name() != null && c.postCode() != null)
                         .map(c -> new CityOption(c.name(), c.postCode()))
                         .toList();
-                log.info("Loaded {} cities from Econt nomenclature.", cities.size());
+                cities.set(loaded);
+                log.info("Loaded {} cities from Econt nomenclature.", loaded.size());
             }
         } catch (Exception e) {
             log.warn("Could not load Econt city nomenclature: {}", e.getMessage());
@@ -51,15 +53,16 @@ public class EcontCityService {
     }
 
     public boolean isValidCity(String name, String postCode) {
-        if (cities.isEmpty()) return true; // nomenclature unavailable — skip validation
-        return cities.stream()
+        List<CityOption> snapshot = cities.get();
+        if (snapshot.isEmpty()) return true;
+        return snapshot.stream()
                 .anyMatch(c -> c.name().equals(name) && c.postCode().equals(postCode));
     }
 
     public List<CityOption> search(String query) {
         if (query == null || query.isBlank()) return List.of();
         String q = query.toLowerCase();
-        return cities.stream()
+        return cities.get().stream()
                 .filter(c -> c.name().toLowerCase().contains(q))
                 .limit(MAX_RESULTS)
                 .toList();

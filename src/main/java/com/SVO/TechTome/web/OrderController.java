@@ -5,17 +5,20 @@ import com.SVO.TechTome.models.ShoppingCartItem;
 import com.SVO.TechTome.models.User;
 import com.SVO.TechTome.security.AuthMetaData;
 import com.SVO.TechTome.services.CheckoutCommand;
+import com.SVO.TechTome.services.DeliveryService;
 import com.SVO.TechTome.services.OrderService;
 import com.SVO.TechTome.services.ShoppingCartService;
 import com.SVO.TechTome.services.UserService;
 import com.SVO.TechTome.web.dto.CheckoutRequest;
 import com.SVO.TechTome.web.exception.DomainException;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -28,13 +31,16 @@ public class OrderController {
     private final OrderService orderService;
     private final UserService userService;
     private final ShoppingCartService shoppingCartService;
+    private final DeliveryService deliveryService;
 
     public OrderController(OrderService orderService,
                            UserService userService,
-                           ShoppingCartService shoppingCartService) {
+                           ShoppingCartService shoppingCartService,
+                           DeliveryService deliveryService) {
         this.orderService = orderService;
         this.userService = userService;
         this.shoppingCartService = shoppingCartService;
+        this.deliveryService = deliveryService;
     }
 
     @GetMapping("/checkout/payment")
@@ -83,5 +89,16 @@ public class OrderController {
         ModelAndView mav = new ModelAndView("order_detail");
         mav.addObject("order", order);
         return mav;
+    }
+
+    @GetMapping("/orders/{id}/tracking")
+    @ResponseBody
+    public ResponseEntity<DeliveryService.TrackingStatus> trackingStatus(@PathVariable UUID id) {
+        Order order = orderService.getOrderById(id);
+        if (order.getTrackingNumber() == null) {
+            return ResponseEntity.noContent().build();
+        }
+        DeliveryService.TrackingStatus status = deliveryService.getTrackingStatus(order.getTrackingNumber());
+        return status != null ? ResponseEntity.ok(status) : ResponseEntity.noContent().build();
     }
 }
