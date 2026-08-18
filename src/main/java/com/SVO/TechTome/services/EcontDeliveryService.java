@@ -134,16 +134,20 @@ public class EcontDeliveryService implements DeliveryService {
         List<String> receiverPhones = (order.getRecipientPhone() != null && !order.getRecipientPhone().isBlank())
                 ? List.of(order.getRecipientPhone()) : List.of();
         Client receiverClient = new Client(order.getRecipientName(), receiverPhones);
-        Address receiverAddress = new Address(
-                new City(country, order.getDeliveryCity(), order.getDeliveryPostCode()),
-                order.getDeliveryStreet(), order.getDeliveryNum(), order.getDeliveryOther());
 
-        Label label = new Label(
-                senderClient, senderAddress,
-                receiverClient, receiverAddress,
-                "PACK", DEFAULT_WEIGHT, 1,
-                "Electronics order #" + order.getId()
-        );
+        Label label;
+        if (order.getDeliveryOfficeCode() != null) {
+            label = new Label(senderClient, senderAddress, receiverClient,
+                    null, order.getDeliveryOfficeCode(),
+                    "PACK", DEFAULT_WEIGHT, 1, "Electronics order #" + order.getId());
+        } else {
+            Address receiverAddress = new Address(
+                    new City(country, order.getDeliveryCity(), order.getDeliveryPostCode()),
+                    order.getDeliveryStreet(), order.getDeliveryNum(), order.getDeliveryOther());
+            label = new Label(senderClient, senderAddress, receiverClient,
+                    receiverAddress, null,
+                    "PACK", DEFAULT_WEIGHT, 1, "Electronics order #" + order.getId());
+        }
         return new LabelRequest(label, mode);
     }
 
@@ -151,8 +155,10 @@ public class EcontDeliveryService implements DeliveryService {
 
     record LabelRequest(Label label, String mode) {}
 
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     record Label(Client senderClient, Address senderAddress,
                  Client receiverClient, Address receiverAddress,
+                 String receiverOfficeCode,
                  String shipmentType, double weight, int packCount,
                  String shipmentDescription) {}
 

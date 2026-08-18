@@ -2,6 +2,7 @@ package com.SVO.TechTome.services;
 
 import com.SVO.TechTome.config.EcontConfig;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -22,7 +23,7 @@ public class EcontCityService {
     private final EcontConfig config;
     private final AtomicReference<List<CityOption>> cities = new AtomicReference<>(List.of());
 
-    public EcontCityService(RestTemplate restTemplate, EcontConfig config) {
+    public EcontCityService(@Qualifier("nomenclaturesRestTemplate") RestTemplate restTemplate, EcontConfig config) {
         this.restTemplate = restTemplate;
         this.config = config;
     }

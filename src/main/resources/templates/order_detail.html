@@ -73,11 +73,17 @@
                     <h3>Delivery Details</h3>
                     <p><strong>Recipient:</strong> <span th:text="${order.recipientName}"></span></p>
                     <p><strong>Phone:</strong> <span th:text="${order.recipientPhone}"></span></p>
-                    <p><strong>Address:</strong>
+                    <p th:if="${order.deliveryOfficeCode != null}">
+                        <strong>Delivery:</strong>
+                        Econt Office — <span th:text="${order.deliveryOfficeCode}"></span>
+                    </p>
+                    <p th:unless="${order.deliveryOfficeCode != null}">
+                        <strong>Address:</strong>
                         <span th:text="${order.deliveryStreet + ' ' + order.deliveryNum
                             + (order.deliveryOther != null ? ', ' + order.deliveryOther : '')
                             + ', ' + order.deliveryCity
-                            + ' ' + order.deliveryPostCode}"></span></p>
+                            + ' ' + order.deliveryPostCode}"></span>
+                    </p>
                     <div th:if="${order.trackingNumber != null}">
                         <p>
                             <strong>Tracking Number:</strong>

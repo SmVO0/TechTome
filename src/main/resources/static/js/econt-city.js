@@ -43,6 +43,9 @@
                         postCodeDisplay.textContent = 'Postal code: ' + city.postCode;
                         dropdown.hidden = true;
                         searchInput.setCustomValidity('');
+                        // kick off background street load so it's ready when user reaches street field
+                        fetch('/api/econt/streets/preload?city=' + encodeURIComponent(city.name))
+                            .catch(function () {});
                     });
                     dropdown.appendChild(li);
                 });
@@ -58,7 +61,9 @@
     });
 
     form.addEventListener('submit', function (e) {
-        if (!cityInput.value) {
+        var homeFields = document.getElementById('homeDeliveryFields');
+        var isOfficeMode = homeFields && homeFields.style.display === 'none';
+        if (!isOfficeMode && !cityInput.value) {
             e.preventDefault();
             searchInput.setCustomValidity('Please select a city from the list.');
             searchInput.reportValidity();

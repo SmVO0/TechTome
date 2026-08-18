@@ -34,6 +34,14 @@
             padding: 0.75rem 1rem; margin-bottom: 1.25rem;
             font-size: 0.92rem; line-height: 1.45;
         }
+        .delivery-type-toggle {
+            display: flex; gap: 1rem; margin-top: 0.25rem;
+        }
+        .delivery-type-option {
+            display: flex; align-items: center; gap: 0.4rem;
+            cursor: pointer; font-size: 0.92rem;
+        }
+        .delivery-type-option input[type="radio"] { cursor: pointer; }
     </style>
 </head>
 <body>
@@ -90,40 +98,77 @@
                                required>
                     </div>
 
+                    <!-- Delivery type toggle -->
                     <div class="form-group">
-                        <label for="citySearch">City</label>
-                        <div class="city-autocomplete">
-                            <input type="text" id="citySearch" autocomplete="off"
-                                   th:value="${checkoutForm?.deliveryCity != null ? checkoutForm.deliveryCity + ' (' + checkoutForm.deliveryPostCode + ')' : ''}"
-                                   placeholder="Type to search…" required>
-                            <ul id="cityDropdown" class="city-dropdown" hidden></ul>
+                        <label>Delivery Method</label>
+                        <div class="delivery-type-toggle">
+                            <label class="delivery-type-option">
+                                <input type="radio" name="deliveryTypeRadio" value="HOME" checked>
+                                <span>Home Delivery</span>
+                            </label>
+                            <label class="delivery-type-option">
+                                <input type="radio" name="deliveryTypeRadio" value="OFFICE">
+                                <span>Econt Office</span>
+                            </label>
                         </div>
-                        <div class="postcode-display" id="postCodeDisplay"
-                             th:text="${checkoutForm?.deliveryPostCode != null ? 'Postal code: ' + checkoutForm.deliveryPostCode : ''}"></div>
-                        <input type="hidden" id="deliveryCity"     name="deliveryCity" th:value="${checkoutForm?.deliveryCity}">
-                        <input type="hidden" id="deliveryPostCode" name="deliveryPostCode" th:value="${checkoutForm?.deliveryPostCode}">
                     </div>
 
-                    <div class="form-group">
-                        <label for="deliveryStreet">Street</label>
-                        <input type="text" id="deliveryStreet" name="deliveryStreet"
-                               th:value="${checkoutForm?.deliveryStreet}"
-                               placeholder="ул. Витоша" required>
+                    <!-- Home delivery fields -->
+                    <div id="homeDeliveryFields">
+                        <div class="form-group">
+                            <label for="citySearch">City</label>
+                            <div class="city-autocomplete">
+                                <input type="text" id="citySearch" autocomplete="off"
+                                       th:value="${checkoutForm?.deliveryCity != null ? checkoutForm.deliveryCity + ' (' + checkoutForm.deliveryPostCode + ')' : ''}"
+                                       placeholder="Type to search…">
+                                <ul id="cityDropdown" class="city-dropdown" hidden></ul>
+                            </div>
+                            <div class="postcode-display" id="postCodeDisplay"
+                                 th:text="${checkoutForm?.deliveryPostCode != null ? 'Postal code: ' + checkoutForm.deliveryPostCode : ''}"></div>
+                            <input type="hidden" id="deliveryCity"     name="deliveryCity" th:value="${checkoutForm?.deliveryCity}">
+                            <input type="hidden" id="deliveryPostCode" name="deliveryPostCode" th:value="${checkoutForm?.deliveryPostCode}">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="deliveryStreet">Street</label>
+                            <div class="city-autocomplete">
+                                <input type="text" id="deliveryStreet" name="deliveryStreet"
+                                       th:value="${checkoutForm?.deliveryStreet}"
+                                       placeholder="ул. Витоша"
+                                       autocomplete="off">
+                                <ul id="streetDropdown" class="city-dropdown" hidden></ul>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="deliveryNum">Street Number</label>
+                            <input type="text" id="deliveryNum" name="deliveryNum"
+                                   th:value="${checkoutForm?.deliveryNum}"
+                                   placeholder="12">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="deliveryOther">Floor / Apartment <span style="font-weight:normal;">(optional)</span></label>
+                            <input type="text" id="deliveryOther" name="deliveryOther"
+                                   th:value="${checkoutForm?.deliveryOther}"
+                                   placeholder="бл. 3, вх. А, ет. 4, ап. 15">
+                        </div>
                     </div>
 
-                    <div class="form-group">
-                        <label for="deliveryNum">Street Number</label>
-                        <input type="text" id="deliveryNum" name="deliveryNum"
-                               th:value="${checkoutForm?.deliveryNum}"
-                               placeholder="12" required>
+                    <!-- Econt office fields -->
+                    <div id="officeDeliveryFields" style="display:none;">
+                        <div class="form-group">
+                            <label for="officeSearch">Search Econt Office</label>
+                            <div class="city-autocomplete">
+                                <input type="text" id="officeSearch" autocomplete="off"
+                                       placeholder="Type city or office name…">
+                                <ul id="officeDropdown" class="city-dropdown" hidden></ul>
+                            </div>
+                            <div class="postcode-display" id="officeDisplay"></div>
+                        </div>
                     </div>
 
-                    <div class="form-group">
-                        <label for="deliveryOther">Floor / Apartment <span style="font-weight:normal;">(optional)</span></label>
-                        <input type="text" id="deliveryOther" name="deliveryOther"
-                               th:value="${checkoutForm?.deliveryOther}"
-                               placeholder="бл. 3, вх. А, ет. 4, ап. 15">
-                    </div>
+                    <input type="hidden" id="deliveryOfficeCode" name="deliveryOfficeCode">
 
                     <div class="payment-placeholder">
                         <h3>Payment</h3>
@@ -166,5 +211,7 @@
 <footer th:insert="~{fragments/footer :: footer}"></footer>
 
 <script src="/js/econt-city.js"></script>
+<script src="/js/econt-office.js"></script>
+<script src="/js/econt-street.js"></script>
 </body>
 </html>

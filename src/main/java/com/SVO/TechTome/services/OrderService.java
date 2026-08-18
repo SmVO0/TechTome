@@ -54,6 +54,8 @@ public class OrderService {
         this.econtCityService = econtCityService;
     }
 
+    private static final BigDecimal DEFAULT_DELIVERY_COST = new BigDecimal("3.99");
+
     @Transactional
     public Order checkout(UUID userId, CheckoutCommand cmd) {
         User user = userService.getById(userId);
@@ -63,7 +65,9 @@ public class OrderService {
             throw new DomainException(CART_IS_EMPTY);
         }
 
-        if (!econtCityService.isValidCity(cmd.deliveryCity(), cmd.deliveryPostCode())) {
+        boolean isOffice = cmd.deliveryOfficeCode() != null && !cmd.deliveryOfficeCode().isBlank();
+
+        if (!isOffice && !econtCityService.isValidCity(cmd.deliveryCity(), cmd.deliveryPostCode())) {
             throw new DomainException(INVALID_DELIVERY_CITY.formatted(cmd.deliveryCity(), cmd.deliveryPostCode()));
         }
 
@@ -78,9 +82,11 @@ public class OrderService {
         BigDecimal discountMultiplier = subscriptionService.getDiscountMultiplier(user);
         BigDecimal discountedTotal = rawTotal.multiply(discountMultiplier).setScale(2, RoundingMode.HALF_UP);
 
-        // Always call calculateDeliveryCost to validate the street address with Econt before saving the order.
-        BigDecimal calculatedCost = deliveryService.calculateDeliveryCost(
-                cmd.deliveryCity(), cmd.deliveryPostCode(), cmd.deliveryStreet(), cmd.deliveryNum(), cmd.deliveryOther());
+        BigDecimal calculatedCost = isOffice
+                ? DEFAULT_DELIVERY_COST
+                : deliveryService.calculateDeliveryCost(
+                        cmd.deliveryCity(), cmd.deliveryPostCode(),
+                        cmd.deliveryStreet(), cmd.deliveryNum(), cmd.deliveryOther());
         BigDecimal deliveryCost = subscriptionService.isShippingFree(user, discountedTotal) ? BigDecimal.ZERO : calculatedCost;
 
         Order order = Order.builder()
@@ -97,6 +103,7 @@ public class OrderService {
                 .deliveryOther(cmd.deliveryOther())
                 .deliveryCity(cmd.deliveryCity())
                 .deliveryPostCode(cmd.deliveryPostCode())
+                .deliveryOfficeCode(isOffice ? cmd.deliveryOfficeCode() : null)
                 .build();
         Order saved = orderRepository.save(order);
 

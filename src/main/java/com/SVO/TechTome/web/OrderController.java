@@ -63,7 +63,8 @@ public class OrderController {
             CheckoutCommand cmd = new CheckoutCommand(
                     form.recipientName(), form.recipientPhone(),
                     form.deliveryStreet(), form.deliveryNum(), form.deliveryOther(),
-                    form.deliveryCity(), form.deliveryPostCode());
+                    form.deliveryCity(), form.deliveryPostCode(),
+                    form.deliveryOfficeCode());
             Order order = orderService.checkout(authMetaData.getId(), cmd);
             return "redirect:/orders/" + order.getId();
         } catch (DomainException e) {

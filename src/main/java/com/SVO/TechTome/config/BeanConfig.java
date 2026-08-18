@@ -1,6 +1,7 @@
 package com.SVO.TechTome.config;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -18,6 +19,7 @@ public class BeanConfig {
         return new BCryptPasswordEncoder();
     }
 
+    /** Short-timeout template for user-facing Econt calls (cost calc, label creation). */
     @Bean
     public RestTemplate restTemplate(
             RestTemplateBuilder builder,
@@ -26,6 +28,18 @@ public class BeanConfig {
         return builder
                 .connectTimeout(Duration.ofMillis(connectTimeoutMs))
                 .readTimeout(Duration.ofMillis(readTimeoutMs))
+                .build();
+    }
+
+    /** Long-timeout template for background nomenclature loading (cities, offices, streets). */
+    @Bean
+    @Qualifier("nomenclaturesRestTemplate")
+    public RestTemplate nomenclaturesRestTemplate(
+            RestTemplateBuilder builder,
+            @Value("${econt.connect-timeout-ms:3000}") int connectTimeoutMs) {
+        return builder
+                .connectTimeout(Duration.ofMillis(connectTimeoutMs))
+                .readTimeout(Duration.ofSeconds(120))
                 .build();
     }
 }

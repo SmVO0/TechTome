@@ -71,6 +71,9 @@ public class Order {
     @Column(length = 50)
     private String trackingNumber;
 
+    @Column(length = 30)
+    private String deliveryOfficeCode;
+
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default
     private List<OrderItem> items = new ArrayList<>();

@@ -7,5 +7,6 @@ public record CheckoutCommand(
         String deliveryNum,
         String deliveryOther,
         String deliveryCity,
-        String deliveryPostCode
+        String deliveryPostCode,
+        String deliveryOfficeCode
 ) {}
