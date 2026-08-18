@@ -10,6 +10,18 @@
     var homeRequiredIds = ['deliveryStreet', 'deliveryNum'];
     var debounceTimer;
 
+    var downstreamIds = ['deliveryStreet', 'deliveryNum', 'deliveryOther'];
+
+    function setDownstream(locked) {
+        downstreamIds.forEach(function (id) {
+            var el = document.getElementById(id);
+            if (!el) return;
+            el.disabled = locked;
+            el.style.opacity = locked ? '0.45' : '';
+            el.style.cursor  = locked ? 'not-allowed' : '';
+        });
+    }
+
     function setHomeMode() {
         homeSection.style.display   = '';
         officeSection.style.display = 'none';
@@ -21,6 +33,9 @@
         if (cityEl) { cityEl.required = true; cityEl.setCustomValidity(''); }
         if (officeSearch) officeSearch.required = false;
         if (officeInput) officeInput.value = '';
+        // re-apply city-based lock: locked unless a city is already confirmed
+        var cityInput = document.getElementById('deliveryCity');
+        setDownstream(!cityInput || !cityInput.value);
     }
 
     function setOfficeMode() {
@@ -33,6 +48,8 @@
         var cityEl = document.getElementById('citySearch');
         if (cityEl) { cityEl.required = false; }
         if (officeSearch) officeSearch.required = true;
+        // home delivery fields are hidden anyway; ensure they are not stuck disabled
+        setDownstream(false);
     }
 
     radios.forEach(function (radio) {
