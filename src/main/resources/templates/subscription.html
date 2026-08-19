@@ -51,6 +51,11 @@
                 <h1>Subscription</h1>
             </div>
 
+            <!-- Flash success after upgrade -->
+            <div th:if="${upgradeSuccess}" class="checkout-error-banner"
+                 style="background:#d1fae5;color:#065f46;border-color:#6ee7b7;"
+                 th:text="${upgradeSuccess}"></div>
+
             <!-- Active subscription summary -->
             <div class="subscription-card">
                 <div class="info-grid">
@@ -96,11 +101,11 @@
                         <li>Free shipping on orders over €50</li>
                     </ul>
                     <span th:if="${active.type.name() == 'STANDARD'}" class="tier-badge">Current plan</span>
-                    <form th:if="${active.type.name() == 'DEFAULT'}"
-                          th:action="@{/users/subscription/upgrade}" method="post">
-                        <input type="hidden" name="newType" value="STANDARD">
-                        <button type="submit" class="btn-checkout">Upgrade to Standard</button>
-                    </form>
+                    <a th:if="${active.type.ordinal() &lt; T(com.SVO.TechTome.models.enums.SubscriptionType).STANDARD.ordinal()}"
+                       th:href="@{/users/subscription/payment(tier='STANDARD')}"
+                       class="btn-checkout" style="display:inline-block;text-align:center;">
+                        Upgrade to Standard
+                    </a>
                 </div>
 
                 <!-- PREMIUM -->
@@ -112,11 +117,11 @@
                         <li>Always free shipping</li>
                     </ul>
                     <span th:if="${active.type.name() == 'PREMIUM'}" class="tier-badge">Current plan</span>
-                    <form th:if="${active.type.name() != 'PREMIUM'}"
-                          th:action="@{/users/subscription/upgrade}" method="post">
-                        <input type="hidden" name="newType" value="PREMIUM">
-                        <button type="submit" class="btn-checkout">Upgrade to Premium</button>
-                    </form>
+                    <a th:if="${active.type.ordinal() &lt; T(com.SVO.TechTome.models.enums.SubscriptionType).PREMIUM.ordinal()}"
+                       th:href="@{/users/subscription/payment(tier='PREMIUM')}"
+                       class="btn-checkout" style="display:inline-block;text-align:center;">
+                        Upgrade to Premium
+                    </a>
                 </div>
 
             </div>

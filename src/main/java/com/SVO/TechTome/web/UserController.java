@@ -16,6 +16,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import java.math.BigDecimal;
 
 
 @Controller
@@ -87,11 +90,35 @@ public class UserController {
         return mav;
     }
 
-    @PostMapping("/subscription/upgrade")
-    public String upgrade(@AuthenticationPrincipal AuthMetaData authMetaData,
-                          @RequestParam SubscriptionType newType) {
+    @GetMapping("/subscription/payment")
+    public ModelAndView subscriptionPayment(@AuthenticationPrincipal AuthMetaData authMetaData,
+                                            @RequestParam SubscriptionType tier) {
         User user = userService.getById(authMetaData.getId());
-        subscriptionService.upgrade(user, newType);
+        Subscription active = subscriptionService.getActiveSubscription(user);
+
+        if (tier.ordinal() <= active.getType().ordinal()) {
+            return new ModelAndView("redirect:/users/subscription");
+        }
+
+        BigDecimal price = tier == SubscriptionType.PREMIUM
+                ? new BigDecimal("9.99") : new BigDecimal("4.99");
+
+        ModelAndView mav = new ModelAndView("subscription_payment");
+        mav.addObject("tier", tier);
+        mav.addObject("price", price);
+        mav.addObject("activePlan", active.getType());
+        return mav;
+    }
+
+    @PostMapping("/subscription/payment/confirm")
+    public String confirmSubscriptionPayment(@AuthenticationPrincipal AuthMetaData authMetaData,
+                                             @RequestParam SubscriptionType tier,
+                                             RedirectAttributes redirectAttributes) {
+        User user = userService.getById(authMetaData.getId());
+        subscriptionService.upgrade(user, tier);
+        String name = tier.name().charAt(0) + tier.name().substring(1).toLowerCase();
+        redirectAttributes.addFlashAttribute("upgradeSuccess",
+                "Upgraded to " + name + " — enjoy your benefits!");
         return "redirect:/users/subscription";
     }
 }

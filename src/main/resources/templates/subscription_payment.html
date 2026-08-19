@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upgrade Subscription – TechTome</title>
+    <link rel="stylesheet" href="/css/common.css">
+    <link rel="stylesheet" href="/css/home.css">
+    <style>
+        .card-form { display: flex; flex-direction: column; gap: 1.1rem; }
+        .card-row  { display: flex; gap: 1rem; }
+        .card-row .form-group { flex: 1; }
+
+        .card-visual {
+            background: linear-gradient(135deg, #1a2340 0%, #2563eb 100%);
+            border-radius: 12px;
+            color: #fff;
+            padding: 1.4rem 1.6rem;
+            margin-bottom: 0.5rem;
+            font-family: ui-monospace, monospace;
+            display: flex;
+            flex-direction: column;
+            gap: 0.6rem;
+            box-shadow: 0 6px 20px rgba(37,99,235,.35);
+        }
+        .card-visual .card-number-preview {
+            font-size: 1.1rem;
+            letter-spacing: 0.18em;
+            color: rgba(255,255,255,.9);
+        }
+        .card-visual .card-meta {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.72rem;
+            color: rgba(255,255,255,.65);
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+        }
+        .card-visual .card-name-preview, .card-visual .card-expiry-preview {
+            font-size: 0.88rem;
+            color: rgba(255,255,255,.85);
+        }
+        .card-logo {
+            align-self: flex-end;
+            font-size: 1.4rem;
+            line-height: 1;
+        }
+
+        .sim-notice {
+            margin-top: 1rem;
+            padding: 0.6rem 0.9rem;
+            background: #fef9c3;
+            border: 1px solid #fde047;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            color: #713f12;
+        }
+
+        .btn-pay {
+            width: 100%;
+            padding: 0.85rem;
+            background: #15803d;
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            transition: background 0.15s;
+        }
+        .btn-pay:hover { background: #166534; }
+        .btn-pay:disabled { background: #4ade80; cursor: not-allowed; }
+
+        .spinner {
+            display: none;
+            width: 16px; height: 16px;
+            border: 2px solid rgba(255,255,255,.4);
+            border-top-color: #fff;
+            border-radius: 50%;
+            animation: spin .6s linear infinite;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        .summary-tier {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--text-dark, #1a2340);
+            text-transform: capitalize;
+        }
+        .summary-price {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #2563eb;
+        }
+        .summary-cycle {
+            font-size: 0.8rem;
+            color: #6b7280;
+            margin-top: -0.4rem;
+        }
+        .summary-divider {
+            border: none;
+            border-top: 1px solid #e5e7eb;
+            margin: 1rem 0;
+        }
+        .summary-benefit {
+            font-size: 0.84rem;
+            color: #374151;
+            padding: 0.2rem 0;
+        }
+        .summary-benefit::before { content: "✓ "; color: #16a34a; font-weight: 700; }
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="navbar">
+        <a th:href="@{/home}"><img src="/images/header/Logo.png" alt="TechTome" class="logo"></a>
+        <form class="search-box" th:action="@{/search}" method="get">
+            <input type="text" name="q" class="search-bar" placeholder="Search TechTome...">
+            <button type="submit" class="search-btn">
+                <img src="/images/header/search.png" alt="Search" class="search-icon">
+            </button>
+        </form>
+        <div class="icons">
+            <a th:href="@{/shopping}" aria-label="Shopping cart" sec:authorize="isAuthenticated()">
+                <img src="/images/header/shopping_cart.png" alt="Cart" class="nav-icon">
+            </a>
+            <a th:href="@{/users/profile}" aria-label="Profile" sec:authorize="isAuthenticated()">
+                <img src="/images/header/Profile.png" alt="Profile" class="nav-icon">
+            </a>
+        </div>
+    </div>
+</header>
+
+<div class="main-container">
+    <main class="main-content" style="grid-column: 1 / -1;">
+        <div class="cart-layout">
+
+            <!-- Payment form -->
+            <section class="cart-items">
+                <h2>Complete Your Upgrade</h2>
+                <p class="payment-note">Enter your card details to activate your
+                    <strong th:text="${tier.name().substring(0,1) + tier.name().substring(1).toLowerCase()}">Standard</strong>
+                    plan.</p>
+
+                <!-- Visual card preview -->
+                <div class="card-visual">
+                    <div class="card-logo">💳</div>
+                    <div class="card-number-preview" id="cardPreview">•••• •••• •••• ••••</div>
+                    <div class="card-meta">
+                        <span>Card Holder</span>
+                        <span>Expires</span>
+                    </div>
+                    <div style="display:flex;justify-content:space-between;">
+                        <div class="card-name-preview" id="namePreview">YOUR NAME</div>
+                        <div class="card-expiry-preview" id="expiryPreview">MM/YY</div>
+                    </div>
+                </div>
+
+                <form th:action="@{/users/subscription/payment/confirm}" method="post"
+                      class="card-form" id="payForm">
+                    <input type="hidden" name="tier" th:value="${tier}">
+
+                    <div class="form-group">
+                        <label for="cardNumber">Card Number</label>
+                        <input type="text" id="cardNumber" name="cardNumber"
+                               placeholder="1234 5678 9012 3456"
+                               maxlength="19" autocomplete="cc-number" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="cardHolder">Cardholder Name</label>
+                        <input type="text" id="cardHolder" name="cardHolder"
+                               placeholder="Jane Smith" autocomplete="cc-name" required>
+                    </div>
+
+                    <div class="card-row">
+                        <div class="form-group">
+                            <label for="cardExpiry">Expiry (MM/YY)</label>
+                            <input type="text" id="cardExpiry" name="cardExpiry"
+                                   placeholder="MM/YY" maxlength="5"
+                                   autocomplete="cc-exp" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="cardCvv">CVV</label>
+                            <input type="text" id="cardCvv" name="cardCvv"
+                                   placeholder="•••" maxlength="4"
+                                   autocomplete="cc-csc" required>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn-pay" id="payBtn">
+                        <span class="spinner" id="spinner"></span>
+                        <span id="payLabel">Confirm Payment</span>
+                    </button>
+                </form>
+
+                <div class="sim-notice">
+                    🔒 This is a simulated payment environment. No real charges are made.
+                </div>
+            </section>
+
+            <!-- Order summary -->
+            <aside class="cart-summary" aria-label="Order summary">
+                <h3>Order Summary</h3>
+                <div style="margin: 1rem 0;">
+                    <div class="summary-tier"
+                         th:text="${tier.name().substring(0,1) + tier.name().substring(1).toLowerCase() + ' Plan'}">
+                        Standard Plan
+                    </div>
+                    <div class="summary-price" th:text="'€' + ${#numbers.formatDecimal(price, 1, 'NONE', 2, 'POINT')}">€4.99</div>
+                    <div class="summary-cycle">billed monthly</div>
+                </div>
+
+                <hr class="summary-divider">
+
+                <div th:if="${tier.name() == 'STANDARD'}">
+                    <div class="summary-benefit">5% discount on all orders</div>
+                    <div class="summary-benefit">Free shipping on orders over €50</div>
+                </div>
+                <div th:if="${tier.name() == 'PREMIUM'}">
+                    <div class="summary-benefit">10% discount on all orders</div>
+                    <div class="summary-benefit">Always free shipping</div>
+                </div>
+
+                <hr class="summary-divider">
+
+                <div class="summary-row summary-total">
+                    <span>Due today</span>
+                    <span th:text="'€' + ${#numbers.formatDecimal(price, 1, 'NONE', 2, 'POINT')}">€4.99</span>
+                </div>
+
+                <a th:href="@{/users/subscription}" class="btn-continue" style="margin-top:1rem;">
+                    ← Back
+                </a>
+            </aside>
+
+        </div>
+    </main>
+</div>
+
+<footer th:insert="~{fragments/footer :: footer}"></footer>
+
+<script>
+(function () {
+    var cardInput   = document.getElementById('cardNumber');
+    var holderInput = document.getElementById('cardHolder');
+    var expiryInput = document.getElementById('cardExpiry');
+    var preview     = document.getElementById('cardPreview');
+    var namePreview = document.getElementById('namePreview');
+    var expPreview  = document.getElementById('expiryPreview');
+    var payBtn      = document.getElementById('payBtn');
+    var spinner     = document.getElementById('spinner');
+    var payLabel    = document.getElementById('payLabel');
+    var form        = document.getElementById('payForm');
+
+    // Card number: format as groups of 4
+    cardInput.addEventListener('input', function () {
+        var digits = this.value.replaceAll(/\D/g, '').substring(0, 16);
+        var formatted = digits.match(/.{1,4}/g)?.join(' ') || '';
+        this.value = formatted;
+        var groups = digits.padEnd(16, '•').match(/.{1,4}/g);
+        preview.textContent = groups ? groups.join(' ') : '•••• •••• •••• ••••';
+    });
+
+    // Cardholder name
+    holderInput.addEventListener('input', function () {
+        namePreview.textContent = this.value.toUpperCase() || 'YOUR NAME';
+    });
+
+    // Expiry: auto-insert slash
+    expiryInput.addEventListener('input', function () {
+        var val = this.value.replaceAll(/\D/g, '').substring(0, 4);
+        if (val.length > 2) val = val.substring(0, 2) + '/' + val.substring(2);
+        this.value = val;
+        expPreview.textContent = val || 'MM/YY';
+    });
+
+    // Processing spinner on submit
+    form.addEventListener('submit', function () {
+        payBtn.disabled = true;
+        spinner.style.display = 'block';
+        payLabel.textContent = 'Processing…';
+    });
+}());
+</script>
+</body>
+</html>
