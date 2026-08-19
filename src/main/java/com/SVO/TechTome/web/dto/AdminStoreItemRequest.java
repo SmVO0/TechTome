@@ -15,4 +15,6 @@ public class AdminStoreItemRequest {
     private int stock;
     private boolean featured;
     private UUID categoryId;
+    private BigDecimal rating;
+    private int reviewCount;
 }

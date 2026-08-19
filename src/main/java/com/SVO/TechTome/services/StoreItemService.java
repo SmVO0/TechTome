@@ -10,6 +10,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.UUID;
 
@@ -30,8 +31,16 @@ public class StoreItemService {
     }
 
     public Page<StoreItem> getStoreItemsByCategory(Category category, int page) {
+        return getStoreItemsByCategoryFiltered(category, null, null, false, page);
+    }
+
+    public Page<StoreItem> getStoreItemsByCategoryFiltered(Category category,
+                                                           BigDecimal minPrice,
+                                                           BigDecimal maxPrice,
+                                                           boolean inStockOnly,
+                                                           int page) {
         PageRequest pageable = PageRequest.of(page, 12, Sort.by("name").ascending());
-        return storeItemRepository.findByCategory(category, pageable);
+        return storeItemRepository.findByCategoryFiltered(category, minPrice, maxPrice, inStockOnly, pageable);
     }
 
     public StoreItem getById(UUID id) {

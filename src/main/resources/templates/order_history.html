@@ -49,6 +49,16 @@
 
             <h2 class="orders-title">Order History</h2>
 
+            <!-- Status filter tabs -->
+            <div class="order-tabs">
+                <a class="order-tab" th:classappend="${selectedStatus == null} ? ' order-tab-active'"
+                   th:href="@{/orders}">All</a>
+                <a class="order-tab" th:each="s : ${statuses}"
+                   th:classappend="${selectedStatus == s} ? ' order-tab-active'"
+                   th:href="@{/orders(status=${s.name()})}"
+                   th:text="${s.name()}">STATUS</a>
+            </div>
+
             <div th:if="${#lists.isEmpty(orders)}" class="cart-empty">
                 <p>You have not placed any orders yet.</p>
                 <a th:href="@{/home}" class="btn-continue">Start Shopping</a>

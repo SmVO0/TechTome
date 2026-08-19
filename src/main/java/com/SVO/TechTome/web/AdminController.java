@@ -109,6 +109,8 @@ public class AdminController {
                 .image(form.getImage())
                 .stock(form.getStock())
                 .featured(form.isFeatured())
+                .rating(form.getRating() != null ? form.getRating() : java.math.BigDecimal.ZERO)
+                .reviewCount(form.getReviewCount())
                 .category(categoryService.getAllCategories().stream()
                         .filter(c -> c.getId().equals(form.getCategoryId()))
                         .findFirst()
@@ -130,6 +132,8 @@ public class AdminController {
         form.setStock(item.getStock());
         form.setFeatured(item.isFeatured());
         form.setCategoryId(item.getCategory().getId());
+        form.setRating(item.getRating());
+        form.setReviewCount(item.getReviewCount());
 
         ModelAndView mav = new ModelAndView("adminProductForm");
         mav.addObject("form", form);
@@ -151,6 +155,8 @@ public class AdminController {
         item.setImage(form.getImage());
         item.setStock(form.getStock());
         item.setFeatured(form.isFeatured());
+        item.setRating(form.getRating() != null ? form.getRating() : java.math.BigDecimal.ZERO);
+        item.setReviewCount(form.getReviewCount());
         item.setCategory(categoryService.getAllCategories().stream()
                 .filter(c -> c.getId().equals(form.getCategoryId()))
                 .findFirst()

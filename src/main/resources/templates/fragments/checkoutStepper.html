@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+<!--
+    Usage:  th:insert="~{fragments/checkoutStepper :: stepper(activeStep=${1})}"
+    Steps:  1 = Cart, 2 = Delivery, 3 = Payment
+-->
+<div th:fragment="stepper(activeStep)" class="checkout-stepper" aria-label="Checkout progress">
+    <div th:each="step : ${ {1,2,3} }" class="stepper-step"
+         th:classappend="${step == activeStep} ? ' stepper-active' : (${step < activeStep} ? ' stepper-done' : '')">
+        <div class="stepper-circle" th:text="${step}"></div>
+        <span class="stepper-label"
+              th:text="${step == 1} ? 'Cart' : (${step == 2} ? 'Delivery' : 'Payment')"></span>
+        <div th:if="${step < 3}" class="stepper-line"></div>
+    </div>
+</div>
+</body>
+</html>

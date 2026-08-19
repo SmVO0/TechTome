@@ -45,6 +45,7 @@
     </aside>
 
     <main class="main-content">
+        <div th:insert="~{fragments/checkoutStepper :: stepper(activeStep=${1})}"></div>
         <div class="cart-layout">
 
             <!-- Cart items -->

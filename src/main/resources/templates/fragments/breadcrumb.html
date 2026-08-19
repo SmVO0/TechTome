@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+<!--
+    Usage:  th:insert="~{fragments/breadcrumb :: breadcrumb(crumbs=${breadcrumbs})}"
+    Model:  breadcrumbs — List of BreadcrumbItem(label, url)
+            The last entry is the current page (rendered as plain text, no link).
+-->
+<nav th:fragment="breadcrumb(crumbs)" aria-label="Breadcrumb" class="breadcrumb">
+    <ol class="breadcrumb-list">
+        <li th:each="crumb, stat : ${crumbs}" class="breadcrumb-item">
+            <span th:if="${!stat.first}" class="breadcrumb-sep" aria-hidden="true">/</span>
+            <a th:if="${!stat.last}" th:href="${crumb.url}" th:text="${crumb.label}">Home</a>
+            <span th:if="${stat.last}" class="breadcrumb-current" aria-current="page"
+                  th:text="${crumb.label}">Current</span>
+        </li>
+    </ol>
+</nav>
+</body>
+</html>

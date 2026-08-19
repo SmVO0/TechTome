@@ -202,3 +202,58 @@
 .btn-wishlist-heart:hover {
   transform: scale(1.2);
 }
+
+.star-row {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.82rem;
+  margin: 2px 0 4px;
+}
+.stars { color: #f59e0b; letter-spacing: 1px; }
+.review-count { color: var(--text-mid); }
+
+/* ── Filter bar ──────────────────────────────────── */
+.filter-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem 0.75rem;
+  padding: 0.65rem 1rem;
+  background: var(--white, #fff);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  margin-bottom: 1rem;
+  font-size: 0.88rem;
+}
+.filter-bar label { font-weight: 500; }
+.filter-bar input[type="number"] {
+  width: 80px;
+  padding: 0.3rem 0.5rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  font-size: 0.88rem;
+}
+.filter-check {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  cursor: pointer;
+  font-weight: 400 !important;
+}
+.filter-btn {
+  padding: 0.3rem 0.9rem;
+  background: var(--navy);
+  color: #fff;
+  border: none;
+  border-radius: var(--radius);
+  font-size: 0.88rem;
+  cursor: pointer;
+}
+.filter-btn:hover { background: var(--navy-mid); }
+.filter-reset {
+  font-size: 0.82rem;
+  color: var(--text-mid);
+  text-decoration: none;
+}
+.filter-reset:hover { text-decoration: underline; }

@@ -51,10 +51,29 @@
 
     <main class="main-content">
 
+        <div th:insert="~{fragments/breadcrumb :: breadcrumb(crumbs=${breadcrumbs})}"></div>
+
         <div class="search-header">
             <h2 th:text="${#strings.capitalize(category.name)}"></h2>
             <span class="search-count" th:text="'(' + ${items.totalElements} + ')'"></span>
         </div>
+
+        <!-- Filter bar -->
+        <form class="filter-bar" th:action="@{'/category/' + ${category.name}}" method="get">
+            <label for="minPrice">Min €</label>
+            <input type="number" id="minPrice" name="minPrice" step="0.01" min="0"
+                   th:value="${minPrice}" placeholder="0">
+            <label for="maxPrice">Max €</label>
+            <input type="number" id="maxPrice" name="maxPrice" step="0.01" min="0"
+                   th:value="${maxPrice}" placeholder="any">
+            <label class="filter-check">
+                <input type="checkbox" name="inStockOnly" value="true"
+                       th:checked="${inStockOnly}">
+                In stock only
+            </label>
+            <button type="submit" class="filter-btn">Filter</button>
+            <a th:href="@{'/category/' + ${category.name}}" class="filter-reset">Reset</a>
+        </form>
 
         <div th:if="${items.totalElements == 0}" class="search-empty">
             <p>No products in this category yet.</p>
@@ -66,6 +85,10 @@
                     <img th:src="${item.image}" alt="Item" class="item-image"
                          onerror="this.onerror=null;this.src='/images/placeholder.svg'">
                     <p th:text="${item.name}">Item name</p>
+                    <div class="star-row" th:if="${item.rating != null and item.rating.compareTo(T(java.math.BigDecimal).ZERO) > 0}">
+                        <span class="stars" th:utext="${@starRenderer.render(item.rating)}">★★★★☆</span>
+                        <span class="review-count" th:text="'(' + ${item.reviewCount} + ')'"></span>
+                    </div>
                 </a>
                 <hr>
                 <div class="bottom-item">

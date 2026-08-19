@@ -41,6 +41,12 @@ public class StoreItem {
     @Column
     private String shortDescription;
 
+    @Column(columnDefinition = "DECIMAL(2,1) DEFAULT 0.0")
+    private BigDecimal rating;
+
+    @Column(columnDefinition = "INT DEFAULT 0")
+    private int reviewCount;
+
     @ManyToOne
     @JoinColumn(name = "category_id", nullable = false)
     private Category category;

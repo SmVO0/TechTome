@@ -70,6 +70,7 @@
 <div class="main-container">
 
     <main class="main-content" style="grid-column: 1 / -1;">
+        <div th:insert="~{fragments/checkoutStepper :: stepper(activeStep=${2})}"></div>
         <div class="cart-layout">
 
             <!-- Delivery & Payment form -->

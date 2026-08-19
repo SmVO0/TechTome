@@ -51,6 +51,7 @@
     </aside>
 
     <main class="main-content">
+        <div th:insert="~{fragments/breadcrumb :: breadcrumb(crumbs=${breadcrumbs})}"></div>
         <div class="item-detail">
 
             <div class="item-detail-image-wrap">
@@ -64,6 +65,11 @@
                 <h1 class="item-detail-title" th:text="${item.name}">Item Name</h1>
 
                 <p class="item-detail-price" th:text="'€' + ${#numbers.formatDecimal(item.price, 1, 'NONE', 2, 'POINT')}">€0.00</p>
+
+                <div class="star-row" th:if="${item.rating != null and item.rating.compareTo(T(java.math.BigDecimal).ZERO) > 0}">
+                    <span class="stars" th:utext="${@starRenderer.render(item.rating)}">★★★★☆</span>
+                    <span class="review-count" th:text="${item.reviewCount} + ' reviews'"></span>
+                </div>
 
                 <p class="item-detail-stock in-stock" th:if="${item.stock > 0}"
                    th:text="${item.stock} + ' in stock'">In Stock</p>

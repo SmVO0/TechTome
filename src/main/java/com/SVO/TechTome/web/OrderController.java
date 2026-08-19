@@ -89,11 +89,18 @@ public class OrderController {
     }
 
     @GetMapping("/orders")
-    public ModelAndView orderHistory(@AuthenticationPrincipal AuthMetaData authMetaData) {
+    public ModelAndView orderHistory(@AuthenticationPrincipal AuthMetaData authMetaData,
+                                     @org.springframework.web.bind.annotation.RequestParam(required = false)
+                                     com.SVO.TechTome.models.enums.OrderStatus status) {
         List<Order> orders = orderService.getOrdersForUser(authMetaData.getId());
+        if (status != null) {
+            orders = orders.stream().filter(o -> o.getStatus() == status).toList();
+        }
 
         ModelAndView mav = new ModelAndView("order_history");
         mav.addObject("orders", orders);
+        mav.addObject("statuses", com.SVO.TechTome.models.enums.OrderStatus.values());
+        mav.addObject("selectedStatus", status);
         return mav;
     }
 
