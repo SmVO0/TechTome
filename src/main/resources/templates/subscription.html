@@ -90,6 +90,11 @@
                         <li>Standard shipping rates</li>
                     </ul>
                     <span th:if="${active.type.name() == 'DEFAULT'}" class="tier-badge">Current plan</span>
+                    <a th:if="${active.type.ordinal() &gt; T(com.SVO.TechTome.models.enums.SubscriptionType).DEFAULT.ordinal()}"
+                       th:href="@{/users/subscription/downgrade(tier='DEFAULT')}"
+                       class="btn-checkout" style="display:inline-block;text-align:center;background:#6b7280;">
+                        Downgrade to Default
+                    </a>
                 </div>
 
                 <!-- STANDARD -->
@@ -105,6 +110,11 @@
                        th:href="@{/users/subscription/payment(tier='STANDARD')}"
                        class="btn-checkout" style="display:inline-block;text-align:center;">
                         Upgrade to Standard
+                    </a>
+                    <a th:if="${active.type.ordinal() &gt; T(com.SVO.TechTome.models.enums.SubscriptionType).STANDARD.ordinal()}"
+                       th:href="@{/users/subscription/downgrade(tier='STANDARD')}"
+                       class="btn-checkout" style="display:inline-block;text-align:center;background:#6b7280;">
+                        Downgrade to Standard
                     </a>
                 </div>
 

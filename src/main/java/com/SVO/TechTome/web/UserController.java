@@ -1,5 +1,6 @@
 package com.SVO.TechTome.web;
 
+import com.SVO.TechTome.constants.Constants;
 import com.SVO.TechTome.models.Subscription;
 import com.SVO.TechTome.models.User;
 import com.SVO.TechTome.models.enums.SubscriptionType;
@@ -97,7 +98,7 @@ public class UserController {
         Subscription active = subscriptionService.getActiveSubscription(user);
 
         if (tier.ordinal() <= active.getType().ordinal()) {
-            return new ModelAndView("redirect:/users/subscription");
+            return new ModelAndView(Constants.SUBSCRIPTION_VIEW);
         }
 
         BigDecimal price = tier == SubscriptionType.PREMIUM
@@ -119,6 +120,34 @@ public class UserController {
         String name = tier.name().charAt(0) + tier.name().substring(1).toLowerCase();
         redirectAttributes.addFlashAttribute("upgradeSuccess",
                 "Upgraded to " + name + " — enjoy your benefits!");
-        return "redirect:/users/subscription";
+        return Constants.SUBSCRIPTION_VIEW;
+    }
+
+    @GetMapping("/subscription/downgrade")
+    public ModelAndView subscriptionDowngrade(@AuthenticationPrincipal AuthMetaData authMetaData,
+                                              @RequestParam SubscriptionType tier) {
+        User user = userService.getById(authMetaData.getId());
+        Subscription active = subscriptionService.getActiveSubscription(user);
+
+        if (tier.ordinal() >= active.getType().ordinal()) {
+            return new ModelAndView(Constants.SUBSCRIPTION_VIEW);
+        }
+
+        ModelAndView mav = new ModelAndView("subscription_downgrade");
+        mav.addObject("tier", tier);
+        mav.addObject("active", active);
+        return mav;
+    }
+
+    @PostMapping("/subscription/downgrade/confirm")
+    public String confirmSubscriptionDowngrade(@AuthenticationPrincipal AuthMetaData authMetaData,
+                                               @RequestParam SubscriptionType tier,
+                                               RedirectAttributes redirectAttributes) {
+        User user = userService.getById(authMetaData.getId());
+        subscriptionService.downgrade(user, tier);
+        String name = tier.name().charAt(0) + tier.name().substring(1).toLowerCase();
+        redirectAttributes.addFlashAttribute("upgradeSuccess",
+                "Downgraded to " + name + ".");
+        return Constants.SUBSCRIPTION_VIEW;
     }
 }

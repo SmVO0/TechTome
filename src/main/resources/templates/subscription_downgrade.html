@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Downgrade Subscription – TechTome</title>
+    <link rel="stylesheet" href="/css/common.css">
+    <link rel="stylesheet" href="/css/home.css">
+    <style>
+        .downgrade-card {
+            background: var(--white, #fff);
+            border: 1px solid #e5e7eb;
+            border-radius: 10px;
+            padding: 2rem;
+            max-width: 520px;
+            margin: 2rem auto;
+        }
+        .downgrade-card h2 { margin-bottom: 0.5rem; }
+        .downgrade-warning {
+            background: #fef3c7;
+            border: 1px solid #fcd34d;
+            border-radius: 6px;
+            padding: 0.75rem 1rem;
+            font-size: 0.88rem;
+            color: #92400e;
+            margin: 1.25rem 0;
+        }
+        .tier-change {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin: 1.5rem 0;
+            font-size: 1rem;
+        }
+        .tier-pill {
+            padding: 0.3rem 0.9rem;
+            border-radius: 99px;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+        .tier-pill.current { background: #dbeafe; color: #1d4ed8; }
+        .tier-pill.target  { background: #f3f4f6; color: #374151; }
+        .arrow { color: #9ca3af; font-size: 1.2rem; }
+        .btn-row { display: flex; gap: 1rem; margin-top: 1.5rem; }
+        .btn-confirm {
+            flex: 1;
+            padding: 0.75rem;
+            background: #dc2626;
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            text-align: center;
+        }
+        .btn-confirm:hover { background: #b91c1c; }
+        .btn-cancel {
+            flex: 1;
+            padding: 0.75rem;
+            background: transparent;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: inherit;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="navbar">
+        <a th:href="@{/home}"><img src="/images/header/Logo.png" alt="TechTome" class="logo"></a>
+        <form class="search-box" th:action="@{/search}" method="get">
+            <input type="text" name="q" class="search-bar" placeholder="Search TechTome...">
+            <button type="submit" class="search-btn">
+                <img src="/images/header/search.png" alt="Search" class="search-icon">
+            </button>
+        </form>
+        <div class="icons">
+            <a th:href="@{/shopping}" aria-label="Shopping cart" sec:authorize="isAuthenticated()">
+                <img src="/images/header/shopping_cart.png" alt="Cart" class="nav-icon">
+            </a>
+            <a th:href="@{/users/profile}" aria-label="Profile" sec:authorize="isAuthenticated()">
+                <img src="/images/header/Profile.png" alt="Profile" class="nav-icon">
+            </a>
+        </div>
+    </div>
+</header>
+
+<div class="main-container">
+    <main class="main-content" style="grid-column: 1 / -1;">
+
+        <div class="downgrade-card">
+            <h2>Confirm Downgrade</h2>
+            <p>You are about to downgrade your subscription plan.</p>
+
+            <div class="tier-change">
+                <span class="tier-pill current"
+                      th:text="${active.type.name().substring(0,1) + active.type.name().substring(1).toLowerCase()}">Premium</span>
+                <span class="arrow">→</span>
+                <span class="tier-pill target"
+                      th:text="${tier.name().substring(0,1) + tier.name().substring(1).toLowerCase()}">Default</span>
+            </div>
+
+            <div class="downgrade-warning">
+                ⚠ Your current benefits will be removed immediately. The new plan takes effect right away and lasts one month from today.
+            </div>
+
+            <form th:action="@{/users/subscription/downgrade/confirm}" method="post">
+                <input type="hidden" name="tier" th:value="${tier}">
+                <div class="btn-row">
+                    <a th:href="@{/users/subscription}" class="btn-cancel">Cancel</a>
+                    <button type="submit" class="btn-confirm">Confirm Downgrade</button>
+                </div>
+            </form>
+        </div>
+
+    </main>
+</div>
+
+<footer th:insert="~{fragments/footer :: footer}"></footer>
+
+</body>
+</html>

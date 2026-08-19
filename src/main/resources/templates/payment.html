@@ -11,7 +11,7 @@
         .city-autocomplete { position: relative; }
         .city-dropdown {
             position: absolute; z-index: 100; width: 100%;
-            background: var(--card-bg, #fff); border: 1px solid #ccc;
+            background: var(--white, #fff); border: 1px solid #ccc;
             border-top: none; border-radius: 0 0 6px 6px;
             list-style: none; margin: 0; padding: 0;
             max-height: 220px; overflow-y: auto;
@@ -20,7 +20,7 @@
         .city-dropdown li {
             padding: 0.55rem 0.75rem; cursor: pointer; font-size: 0.9rem;
         }
-        .city-dropdown li:hover { background: #4a90e2; color: #fff; }
+        .city-dropdown li:hover { background: #1d6dc2; color: #fff; }
         .postcode-display {
             margin-top: 0.3rem; font-size: 0.85rem; color: #595959;
             min-height: 1.2em;
@@ -99,8 +99,8 @@
                     </div>
 
                     <!-- Delivery type toggle -->
-                    <div class="form-group">
-                        <label>Delivery Method</label>
+                    <fieldset class="form-group" style="border:none;padding:0;margin:0;">
+                        <legend style="font-weight:600;font-size:0.95rem;margin-bottom:0.35rem;">Delivery Method</legend>
                         <div class="delivery-type-toggle">
                             <label class="delivery-type-option">
                                 <input type="radio" name="deliveryTypeRadio" value="HOME" checked>
@@ -111,7 +111,7 @@
                                 <span>Econt Office</span>
                             </label>
                         </div>
-                    </div>
+                    </fieldset>
 
                     <!-- Home delivery fields -->
                     <div id="homeDeliveryFields">
@@ -191,13 +191,25 @@
 
                 <hr class="summary-divider">
 
-                <div class="summary-row summary-total">
+                <div class="summary-row">
                     <span>Subtotal</span>
                     <span th:text="'€' + ${#numbers.formatDecimal(cartTotal, 1, 'NONE', 2, 'POINT')}"></span>
                 </div>
 
+                <div th:if="${hasDiscount}" class="summary-row" style="color:#16a34a;">
+                    <span th:text="'Subscription discount (' + ${discountPct} + '%)'">Discount</span>
+                    <span th:text="'-€' + ${#numbers.formatDecimal(cartTotal - discountedTotal, 1, 'NONE', 2, 'POINT')}"></span>
+                </div>
+
+                <hr class="summary-divider">
+
+                <div class="summary-row summary-total">
+                    <span>Total</span>
+                    <span th:text="'€' + ${#numbers.formatDecimal(discountedTotal, 1, 'NONE', 2, 'POINT')}"></span>
+                </div>
+
                 <p class="payment-note" style="margin-top:0.5rem;">
-                    Shipping and discounts applied at order confirmation.
+                    Shipping cost applied at order confirmation.
                 </p>
 
                 <a th:href="@{/shopping}" class="btn-continue">← Back to Cart</a>

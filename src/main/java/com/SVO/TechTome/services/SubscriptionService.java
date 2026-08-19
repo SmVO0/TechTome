@@ -44,10 +44,27 @@ public class SubscriptionService {
             throw new DomainException("Cannot downgrade or select the same subscription tier.");
         }
 
+        changeTier(user, current, newType);
+        log.info("User [{}] upgraded subscription to [{}].", user.getEmail(), newType);
+    }
+
+    @Transactional
+    public void downgrade(User user, SubscriptionType newType) {
+        Subscription current = getActiveSubscription(user);
+
+        if (current.getType().ordinal() <= newType.ordinal()) {
+            throw new DomainException("Cannot upgrade or select the same subscription tier.");
+        }
+
+        changeTier(user, current, newType);
+        log.info("User [{}] downgraded subscription to [{}].", user.getEmail(), newType);
+    }
+
+    private void changeTier(User user, Subscription current, SubscriptionType newType) {
         current.setStatus(SubscriptionStatus.INACTIVE);
         subscriptionRepository.save(current);
 
-        Subscription upgraded = Subscription.builder()
+        Subscription next = Subscription.builder()
                 .owner(user)
                 .type(newType)
                 .status(SubscriptionStatus.ACTIVE)
@@ -55,9 +72,7 @@ public class SubscriptionService {
                 .createdOn(LocalDateTime.now())
                 .completedOn(LocalDateTime.now().plusMonths(1))
                 .build();
-        subscriptionRepository.save(upgraded);
-
-        log.info("User [{}] upgraded subscription to [{}].", user.getEmail(), newType);
+        subscriptionRepository.save(next);
     }
 
     public BigDecimal getDiscountMultiplier(User user) {

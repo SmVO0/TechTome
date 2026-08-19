@@ -8,6 +8,7 @@ import com.SVO.TechTome.services.CheckoutCommand;
 import com.SVO.TechTome.services.DeliveryService;
 import com.SVO.TechTome.services.OrderService;
 import com.SVO.TechTome.services.ShoppingCartService;
+import com.SVO.TechTome.services.SubscriptionService;
 import com.SVO.TechTome.services.UserService;
 import com.SVO.TechTome.web.dto.CheckoutRequest;
 import com.SVO.TechTome.web.exception.DomainException;
@@ -22,6 +23,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.List;
 import java.util.UUID;
 
@@ -32,26 +35,37 @@ public class OrderController {
     private final UserService userService;
     private final ShoppingCartService shoppingCartService;
     private final DeliveryService deliveryService;
+    private final SubscriptionService subscriptionService;
 
     public OrderController(OrderService orderService,
                            UserService userService,
                            ShoppingCartService shoppingCartService,
-                           DeliveryService deliveryService) {
+                           DeliveryService deliveryService,
+                           SubscriptionService subscriptionService) {
         this.orderService = orderService;
         this.userService = userService;
         this.shoppingCartService = shoppingCartService;
         this.deliveryService = deliveryService;
+        this.subscriptionService = subscriptionService;
     }
 
     @GetMapping("/checkout/payment")
     public ModelAndView paymentForm(@AuthenticationPrincipal AuthMetaData authMetaData) {
         User user = userService.getById(authMetaData.getId());
         List<ShoppingCartItem> items = shoppingCartService.getItems(user.getShoppingCart().getId());
+        BigDecimal cartTotal = user.getShoppingCart().getTotalPrice();
+        BigDecimal multiplier = subscriptionService.getDiscountMultiplier(user);
+        BigDecimal discountedTotal = cartTotal.multiply(multiplier).setScale(2, RoundingMode.HALF_UP);
+        boolean hasDiscount = multiplier.compareTo(BigDecimal.ONE) < 0;
 
         ModelAndView mav = new ModelAndView("payment");
         mav.addObject("user", user);
         mav.addObject("items", items);
-        mav.addObject("cartTotal", user.getShoppingCart().getTotalPrice());
+        mav.addObject("cartTotal", cartTotal);
+        mav.addObject("discountedTotal", discountedTotal);
+        mav.addObject("hasDiscount", hasDiscount);
+        mav.addObject("discountPct", BigDecimal.ONE.subtract(multiplier)
+                .multiply(new BigDecimal("100")).setScale(0, RoundingMode.HALF_UP).intValue());
         return mav;
     }
 

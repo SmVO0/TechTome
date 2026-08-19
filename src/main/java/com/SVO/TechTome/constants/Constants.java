@@ -7,6 +7,7 @@ public final class Constants {
     // Views
     public static final String ERROR_VIEW = "error";
     public static final String PRODUCT_VIEW = "redirect:/admin/products";
+    public static final String SUBSCRIPTION_VIEW = "redirect:/users/subscription";
 
     // General
     public static final String STATUS_CODE = "statusCode";
