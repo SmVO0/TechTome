@@ -1,9 +1,16 @@
+# ---- Build stage ----
+# Compiles the app inside Docker so no local Maven/JDK install is required.
+FROM maven:3.9.9-amazoncorretto-17 AS build
+WORKDIR /build
+COPY pom.xml .
+# Cache dependencies in their own layer: this RUN only re-executes when pom.xml changes.
+RUN mvn -B dependency:go-offline
+COPY src ./src
+RUN mvn -B clean package -DskipTests
+
+# ---- Runtime stage ----
 FROM amazoncorretto:17.0.18-alpine3.23
 WORKDIR /app
 EXPOSE 8080
-ENV DB_USER="USER"
-ENV DB_PASS="PASS"
-#ENV SPRING_DATASOURCE_URL="jdbc:mysql://docker.for.mac.host.internal:3306/tech_tome_app?createDatabaseIfNotExist=true"
-ENV SPRING_DATASOURCE_URL="jdbc:mysql://host.docker.internal:3306/tech_tome_app?createDatabaseIfNotExist=true"
-COPY TechTomeMVC/TechTome/target/TechTome-0.0.1-SNAPSHOT.jar app.jar
-ENTRYPOINT ["java","-jar","app.jar"]
+COPY --from=build /build/target/TechTome-0.0.1-SNAPSHOT.jar app.jar
+ENTRYPOINT ["java", "-jar", "app.jar"]

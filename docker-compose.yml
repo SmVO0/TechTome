@@ -1,0 +1,47 @@
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: techtome-mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_PASS:-12345678}
+      MYSQL_DATABASE: tech_tome_app
+    volumes:
+      - mysql_data:/var/lib/mysql
+    ports:
+      - "3307:3306"
+    networks:
+      - techtome-net
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-p${DB_PASS:-12345678}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  app:
+    build: .
+    container_name: techtome-app
+    restart: unless-stopped
+    depends_on:
+      mysql:
+        condition: service_healthy
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/tech_tome_app?createDatabaseIfNotExist=true
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: ${DB_PASS:-12345678}
+      DB-USER: ${SECURITY_USER:-admin}
+      DB-PASS: ${SECURITY_PASS:-changeme}
+      ECONT_URL: ${ECONT_URL:-http://demo.econt.com/ee/services}
+      ECONT_USER: ${ECONT_USER:-iasp-dev}
+      ECONT_PASS: ${ECONT_PASS:-1Asp-dev}
+    ports:
+      - "8080:8080"
+    networks:
+      - techtome-net
+
+networks:
+  techtome-net:
+    name: techtome-net
+
+volumes:
+  mysql_data:

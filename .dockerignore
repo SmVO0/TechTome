@@ -1,0 +1,9 @@
+target/
+.idea/
+.git/
+.mvn/
+*.iml
+.DS_Store
+Dockerfile
+docker-compose.yml
+.env

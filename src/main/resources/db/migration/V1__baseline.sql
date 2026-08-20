@@ -14,6 +14,12 @@ CREATE TABLE category (
     UNIQUE KEY uq_category_name (name)
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4;
 
+INSERT INTO category (id, name) VALUES
+    (UUID_TO_BIN(UUID()), 'laptops'),
+    (UUID_TO_BIN(UUID()), 'computers'),
+    (UUID_TO_BIN(UUID()), 'keyboards'),
+    (UUID_TO_BIN(UUID()), 'mice');
+
 CREATE TABLE user (
     id               binary(16)                              NOT NULL,
     email            varchar(255)                            NOT NULL,
